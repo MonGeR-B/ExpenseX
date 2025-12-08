@@ -201,16 +201,34 @@ npx create-next-app@latest web \
   --import-alias "@/*"
 
 
-### Phase 3 – Web Auth + Wiring
-- [ ] Login/Register.
-- [ ] API integration.
+**Phase 3 – Web Auth + Wiring**
+  - [ ] Login/Register.
+  - [ ] API integration.
 
-### Phase 4 – Mobile MVP
-- [ ] Expo setup.
-- [ ] Login + Home screen.
+**Phase 4 – Mobile MVP**
+  - [ ] Expo setup.
+  - [ ] Login + Home screen.
 
 ## 7. Rules
 1. If it’s not in `PLAN.md`, it doesn’t exist.
 2. Update this file before adding new features.
 3. No stack changes without updating Section 0.
 4. Finish each phase before moving on.
+
+**Phase 4 – Stats API + Real Charts**
+
+Goal:
+Backend exposes stats endpoints and the dashboard charts use REAL data instead of mocks.
+
+Required:
+- Backend:
+  - `GET /api/stats/summary`
+  - `GET /api/stats/monthly`
+  - `GET /api/stats/categories`
+- Frontend:
+  - `CardsAndCharts` fetches from those endpoints.
+  - KPI cards reflect actual user data.
+  - Monthly chart and category pie chart use real aggregates.
+
+Only after this: Mobile phase.
+

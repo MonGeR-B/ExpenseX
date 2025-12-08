@@ -5,11 +5,9 @@ import { RecentTable } from "@/components/dashboard/RecentTable";
 
 export default function DashboardPage() {
     return (
-        <AppShell>
-            <div className="space-y-6">
-                <CardsAndCharts />
-                <RecentTable />
-            </div>
-        </AppShell>
+        <div className="space-y-6">
+            <CardsAndCharts />
+            <RecentTable />
+        </div>
     );
 }
