@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #020617;
+  --bg-soft: #020817;
+  --card: #020617;
+  --border-subtle: rgba(148, 163, 184, 0.35);
+  --accent: #22c55e;
+  --accent-soft: rgba(34, 197, 94, 0.12);
+}
+
+body {
+  @apply bg-slate-950 text-slate-50 antialiased;
+}
