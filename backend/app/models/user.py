@@ -17,6 +17,8 @@ class User(Base):
 
     categories: Mapped[list["Category"]] = relationship(back_populates="user")
     expenses: Mapped[list["Expense"]] = relationship(back_populates="user")
+    budgets: Mapped[list["Budget"]] = relationship(back_populates="user")
 
 from app.models.category import Category  # noqa: E402
 from app.models.expense import Expense   # noqa: E402
+from app.models.budget import Budget     # noqa: E402
