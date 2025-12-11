@@ -10,6 +10,12 @@ export const metadata: Metadata = {
   },
 };
 
+import { Toaster } from 'sonner';
+
+import { Outfit } from "next/font/google";
+
+const outfit = Outfit({ subsets: ["latin"] });
+
 export default function RootLayout({
   children,
 }: {
@@ -17,8 +23,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-slate-950 text-slate-50" suppressHydrationWarning>
+      <body className={`min-h-screen bg-black text-white ${outfit.className}`} suppressHydrationWarning>
         {children}
+        <Toaster theme="dark" position="top-center" />
       </body>
     </html>
   );

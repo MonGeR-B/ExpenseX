@@ -6,28 +6,30 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "#", label: "Expenses" },
-    { href: "#", label: "Analytics" },
-    { href: "#", label: "Settings" },
+    { href: "/dashboard", label: "Overview" },
+    { href: "/budgets", label: "Budgets" },
+    { href: "/transactions", label: "Transactions" },
+    { href: "/reports", label: "Reports" },
+    { href: "/categories", label: "Categories" },
+    { href: "/settings", label: "Settings" },
 ];
 
 export function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="hidden md:flex md:flex-col md:w-60 border-r border-slate-800 bg-[radial-gradient(circle_at_top_left,#020617,#020617)]">
-            <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-800">
-                <div className="h-9 w-9 rounded-2xl bg-gradient-to-br from-emerald-400 via-sky-400 to-violet-500 flex items-center justify-center text-slate-950 font-bold">
-                    ₹
+        <aside className="hidden md:flex md:flex-col md:w-64 bg-[#111111] border-r border-white/5 sticky top-0 h-screen overflow-y-auto">
+            <div className="flex items-center gap-3 px-6 py-6 border-b border-white/5">
+                <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-black font-black shadow-lg shadow-white/10">
+                    <span className="text-xl">X</span>
                 </div>
                 <div>
-                    <div className="text-sm font-semibold tracking-tight">ExpenseX</div>
-                    <div className="text-xs text-slate-400">Personal finance</div>
+                    <div className="text-base font-bold text-white tracking-tight">ExpenseX</div>
+                    <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Workspace</div>
                 </div>
             </div>
 
-            <nav className="flex-1 px-3 py-4 space-y-1">
+            <nav className="flex-1 px-4 py-6 space-y-2">
                 {navItems.map((item) => {
                     const active = pathname === item.href;
                     return (
@@ -35,10 +37,10 @@ export function Sidebar() {
                             key={item.label}
                             href={item.href}
                             className={cn(
-                                "flex items-center rounded-xl px-3 py-2 text-sm transition",
+                                "flex items-center rounded-xl px-4 py-3.5 text-sm font-bold transition-all duration-200",
                                 active
-                                    ? "bg-emerald-500 text-slate-950"
-                                    : "text-slate-300 hover:bg-slate-900"
+                                    ? "bg-white text-black shadow-lg shadow-white/10"
+                                    : "text-slate-400 hover:bg-white/5 hover:text-white"
                             )}
                         >
                             {item.label}
@@ -47,8 +49,19 @@ export function Sidebar() {
                 })}
             </nav>
 
-            <div className="px-4 py-4 border-t border-slate-800 text-xs text-slate-500">
-                v0.1 · Personal build
+            <div className="p-4">
+                <div className="rounded-2xl bg-gradient-to-br from-neutral-900 to-black p-5 border border-white/10 shadow-lg relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <span className="text-4xl">👑</span>
+                    </div>
+                    <div className="relative z-10">
+                        <h4 className="text-xs font-black text-white uppercase tracking-wider mb-1">Pro Plan</h4>
+                        <p className="text-xs font-medium text-slate-500 mb-4">Get advanced analytics feature</p>
+                        <button className="w-full rounded-xl bg-white py-2.5 text-xs font-bold text-black shadow-lg shadow-white/5 hover:bg-slate-200 transition-all">
+                            Upgrade Now
+                        </button>
+                    </div>
+                </div>
             </div>
         </aside>
     );

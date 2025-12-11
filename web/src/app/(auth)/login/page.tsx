@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
@@ -29,9 +30,10 @@ export default function LoginPage() {
         setIsSubmitting(true)
         try {
             await login(email, password)
+            toast.success("Login Successful! Welcome back.")
             router.push("/dashboard")
         } catch (err) {
-            // Error handled by store
+            toast.error("Invalid credentials")
         } finally {
             setIsSubmitting(false)
         }

@@ -165,70 +165,94 @@ Target: Clean fintech look.
 
 ## 6. Implementation Phases (Sequential)
 
-### Phase 0 – Repo & Skeletons
+### Phase 0 – Repo & Skeletons [COMPLETE]
 - [x] Create directory structure.
 - [x] Setup `PLAN.md`.
-- [ ] Move/Archive old prototype (if exists).
 
-### Phase 1 – Backend Core (Auth + Expenses)
-- [x] `pyproject.toml` dependencies (Done).
+### Phase 1 – Backend Core (Auth + Expenses) [COMPLETE]
+- [x] `pyproject.toml` dependencies.
 - [x] DB Setup (SQLAlchemy + Alembic).
 - [x] Models (User, Category, Expense).
 - [x] Routes (Auth, Expenses).
 
-## Phase 2 – Web App Setup + Static Dashboard
+### Phase 2 – Web App Setup + Static Dashboard [COMPLETE]
+- [x] Initialize Next.js app (`npx create-next-app`).
+- [x] Install `shadcn/ui` and dependencies.
+- [x] Build static dashboard layout.
 
-Goal:  
-A **beautiful, static dashboard** at `/dashboard` using Next.js + Tailwind.  
-No auth. No API calls. Just layout + fake data that looks like a real fintech app.
+### Phase 3 – Web Auth + Wiring [COMPLETE]
+- [x] Setup API Client (Axios + Interceptors).
+- [x] Implement Auth State Management (Zustand).
+- [x] Create Login/Register Pages.
+- [x] Implement Route Protection (Middleware).
 
-We do NOT touch mobile or backend wiring in this phase.
+### Phase 4 – Mobile App [COMPLETE]
+- [x] Init Expo Project & Setup Auth.
+- [x] Build Screens (Login, Register, Dashboard).
+- [x] Verify Real Device Data Flow.
 
----
+### Phase 5 – Mobile Rescue Mission [COMPLETE]
+- [x] Clean Install & Configuration Fixes.
 
-### 2.0 Create Next.js app
+### Phase 6 – Core Features (Categories & Enhanced Expenses) [COMPLETE]
+- [x] Backend: Category Model & CRUD.
+- [x] Web: Category Manager & UI Polish.
+- [x] Web: Expense Management (Edit/Delete/Filter/Pagination).
 
-From `expensex/`:
+### Phase 7 – Analytics & Budgets [COMPLETE]
+- [x] API: Stats Endpoints (Daily/Monthly/Yearly).
+- [x] Web: Charts (Pie/Bar) & Insights.
+- [x] Budgets: Backend Model & API.
+- [x] Web: Budget Progress Bars & Alerts.
 
-```bash
-cd expensex
-npx create-next-app@latest web \
-  --typescript \
-  --eslint \
-  --tailwind \
-  --src-dir false \
-  --app \
-  --import-alias "@/*"
+### Phase 8 – Polish & Production Ready [COMPLETE]
+- [x] Data Tools (Import/Export).
+- [x] UI/UX Refinement (Toasts, Space Theme, Glassmorphism).
+- [x] Auth Polish (Error Handling).
 
+### Phase 9 – "Pastel Pro" Layout & Hero Pattern [COMPLETE]
+- [x] Redesign Sidebar & Topbar (Gradient/Border).
+- [x] Apply Hero Pattern to RecentTransactions & Budgets.
 
-**Phase 3 – Web Auth + Wiring**
-  - [ ] Login/Register.
-  - [ ] API integration.
+### Phase 10 – "LuckyJob" Dark Navigation Theme [COMPLETE]
+- [x] Implement Dark Sidebar/Topbar (#111).
+- [x] Verify Dark Nav + Light Content Mix.
 
-**Phase 4 – Mobile MVP**
-  - [ ] Expo setup.
-  - [ ] Login + Home screen.
+### Phase 11 – Dark Mode Refinements [COMPLETE]
+- [x] Fix Shadows & Visibility.
+- [x] Set True Black (#000) Background.
+- [x] Verify UI Polish.
+
+### Phase 12 – Route Restoration & Budget Fixes [COMPLETE]
+- [x] Restore `/categories`, `/transactions`, `/reports`.
+- [x] Debug Data Loading Failures.
+
+### Phase 13 – Hero Card Redesign [COMPLETE]
+- [x] Add `Outfit` Font.
+- [x] Implement 3D Pinned Card Component.
+- [x] Apply "Designer's Toolkit" Aesthetics.
+
+### Phase 14 – Global Design Propagation [COMPLETE]
+- [x] Redesign Budgets, Categories, Settings with Pinned Cards.
+- [x] Verify All Pages Design.
+
+### Phase 15 – Final Polish & Budget Fixes [COMPLETE]
+- [x] Dashboard: Customize Heading & Hook.
+- [x] Clean Up Pins (Transactions/Reports).
+- [x] Fix "Internal Server Error" on Budgets (Pydantic V2).
+
+### Phase 16 – Budget Type Fix & Final Designs [COMPLETE]
+- [x] Fix Decimal/Float Casting Bug.
+- [x] Style Category Button.
+- [x] Verify Reports Pin Removal.
+
+### Phase 17 – Auth & Debugging [COMPLETE]
+- [x] Fix 401 Unauthorized Loop (Auto Redirect).
+- [x] Clean up Debug Logs & Temporary Files.
 
 ## 7. Rules
 1. If it’s not in `PLAN.md`, it doesn’t exist.
 2. Update this file before adding new features.
 3. No stack changes without updating Section 0.
 4. Finish each phase before moving on.
-
-**Phase 4 – Stats API + Real Charts**
-
-Goal:
-Backend exposes stats endpoints and the dashboard charts use REAL data instead of mocks.
-
-Required:
-- Backend:
-  - `GET /api/stats/summary`
-  - `GET /api/stats/monthly`
-  - `GET /api/stats/categories`
-- Frontend:
-  - `CardsAndCharts` fetches from those endpoints.
-  - KPI cards reflect actual user data.
-  - Monthly chart and category pie chart use real aggregates.
-
-Only after this: Mobile phase.
 

@@ -59,3 +59,17 @@ mobile/web-build/
 .vscode/
 *.swp
 *.swo
+
+# Debug & Temporary Scripts
+debug_*.py
+debug_*.txt
+debug_*.json
+verify_*.py
+seed_user_request.py
+test_api_v1.py
+backend_debug.log
+backend_error.log
+build_error*.log
+
+COURSE.md
+PLAN.md

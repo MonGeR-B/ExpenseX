@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 export default function RegisterPage() {
     const [email, setEmail] = useState("")
@@ -32,6 +33,7 @@ export default function RegisterPage() {
         setLocalError("")
 
         if (password !== confirmPassword) {
+            toast.error("Passwords do not match")
             setLocalError("Passwords do not match")
             return
         }
@@ -39,10 +41,10 @@ export default function RegisterPage() {
         setIsSubmitting(true)
         try {
             await register(email, password)
-            // On success, redirect to login
-            router.push("/login")
+            toast.success("Signup Successful! Redirecting...")
+            router.push("/dashboard")
         } catch (err) {
-            // Error handled by store
+            toast.error("Registration failed")
         } finally {
             setIsSubmitting(false)
         }

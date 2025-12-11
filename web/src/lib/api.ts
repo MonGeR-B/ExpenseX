@@ -33,12 +33,60 @@ api.interceptors.response.use(
             // Clear token and redirect to login if unauthorized
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('token');
-                // Optional: Redirect via window.location or handle in store
-                // window.location.href = '/login'; 
+                window.location.href = '/login';
             }
         }
         return Promise.reject(error);
     }
 );
+
+
+import type {
+    SummaryStats,
+    MonthlyStats,
+    CategoryStats,
+    DailyStats,
+} from "./types";
+
+export async function getSummaryStats(
+    year?: number,
+    month?: number
+): Promise<SummaryStats> {
+    const params: any = {};
+    if (year) params.year = year;
+    if (month) params.month = month;
+    const res = await api.get<SummaryStats>("/stats/summary", { params });
+    return res.data;
+}
+
+export async function getMonthlyStats(year?: number): Promise<MonthlyStats> {
+    const params: any = {};
+    if (year) params.year = year;
+    const res = await api.get<MonthlyStats>("/stats/monthly", { params });
+    return res.data;
+}
+
+export async function getCategoryStats(
+    year?: number,
+    month?: number
+): Promise<CategoryStats> {
+    const params: any = {};
+    if (year) params.year = year;
+    if (month) params.month = month;
+    const res = await api.get<CategoryStats>("/stats/categories", { params });
+    return res.data;
+}
+
+
+export async function getDailyStats(
+    year?: number,
+    month?: number
+): Promise<DailyStats> {
+    const params: any = {};
+    if (year) params.year = year;
+    if (month) params.month = month;
+    const res = await api.get<DailyStats>("/stats/daily", { params });
+    return res.data;
+}
 
 export default api;
