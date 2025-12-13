@@ -73,3 +73,38 @@ build_error*.log
 
 COURSE.md
 PLAN.md
+
+# Agent Artifacts
+artifacts/
+.gemini/
+tmp/
+*.webp
+*.png
+
+# Course Generation Script
+generate_course.py
+
+# Tests & Coverage
+test_*.py
+*test.ts
+*test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+coverage/
+.pytest_cache/
+.nyc_output/
+junit.xml
+
+# Debugger & Temporary Scripts (Explicit)
+debug_*.py
+debug_*.txt
+debug_*.json
+verify_*.py
+seed_user_request.py
+test_api_v1.py
+backend_debug.log
+backend_error.log
+build_error*.log
+ensure_user_request.py
+mobile_verify.py

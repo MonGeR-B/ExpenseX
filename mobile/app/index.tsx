@@ -5,6 +5,6 @@ export default function Index() {
     const { token, loading } = useAuth();
 
     if (loading) return null;
-    if (token) return <Redirect href="/dashboard" />;
+    if (token) return <Redirect href="/(tabs)/overview" />;
     return <Redirect href="/login" />;
 }

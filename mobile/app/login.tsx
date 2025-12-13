@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useAuth } from "../src/context/AuthContext";
 import { loginApi } from "../src/lib/api";
+import { PinnedCard } from "../src/components/PinnedCard";
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -11,73 +12,111 @@ export default function LoginScreen() {
     const [password, setPassword] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
+    const [errorMsg, setErrorMsg] = useState("");
+
     const handleSubmit = async () => {
+        setErrorMsg("");
         if (!email || !password) {
-            Alert.alert("Error", "Email and password are required.");
+            setErrorMsg("Email and password are required.");
             return;
         }
         try {
             setSubmitting(true);
-            const res = await loginApi(email, password);
+
+            // Create a timeout promise
+            const timeout = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error("Request timed out check network.")), 5000);
+            });
+
+            // Race the login against the timeout
+            const res: any = await Promise.race([
+                loginApi(email, password),
+                timeout
+            ]);
+
+            console.log("Login Success:", res); // Debug log
             await login(res.access_token);
-            router.replace("/dashboard");
+            router.replace("/(tabs)/overview");
         } catch (err: any) {
-            console.error(err);
-            Alert.alert("Login failed", "Check your credentials.");
+            console.error("Login Error:", err);
+            setErrorMsg(err.message || "Login Failed");
         } finally {
             setSubmitting(false);
         }
     };
 
     return (
-        <View className="flex-1 bg-slate-950 px-5 justify-center" style={{ flex: 1, backgroundColor: '#020617', paddingHorizontal: 20, justifyContent: 'center' }}>
-            <Text className="text-3xl font-semibold text-slate-50 mb-2" style={{ fontSize: 30, fontWeight: '600', color: '#f8fafc', marginBottom: 8 }}>
-                Welcome back
-            </Text>
-            <Text className="text-slate-400 mb-8 text-sm" style={{ color: '#94a3b8', marginBottom: 32, fontSize: 14 }}>
-                Sign in to track and control your daily spending.
-            </Text>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1 bg-black" style={{ backgroundColor: '#000000' }}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
+                <View className="items-center mb-8">
+                    <View className="h-16 w-16 bg-emerald-500 rounded-2xl mb-4 shadow-lg" style={{ backgroundColor: '#10b981', width: 64, height: 64, borderRadius: 16 }} />
+                    <Text className="text-4xl font-extrabold text-white text-center" style={{ fontFamily: 'Outfit_900Black', fontSize: 36, color: 'white' }}>ExpenseX</Text>
+                    <Text className="text-slate-400 font-medium tracking-wide" style={{ color: '#94a3b8' }}>Financial Freedom OS</Text>
+                </View>
 
-            <Text className="text-xs text-slate-300 mb-1" style={{ fontSize: 12, color: '#cbd5e1', marginBottom: 4 }}>Email</Text>
-            <TextInput
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-50 mb-4"
-                style={{ backgroundColor: '#0f172a', borderColor: '#334155', borderWidth: 1, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8, color: '#f8fafc', marginBottom: 16 }}
-                placeholder="you@example.com"
-                placeholderTextColor="#4b5563"
-            />
+                {/* Added inline style fallbacks for visibility */}
+                <PinnedCard theme="indigo" showPin={false} className="bg-slate-900 border-slate-800">
+                    <View style={{ backgroundColor: '#0f172a', borderRadius: 24, padding: 24, borderWidth: 1, borderColor: '#1e293b' }}>
+                        <Text className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Outfit_700Bold', fontSize: 24, color: 'white' }}>Welcome Back</Text>
+                        <Text className="text-slate-400 mb-6 text-sm" style={{ color: '#94a3b8', marginBottom: 24 }}>Sign in to your account</Text>
 
-            <Text className="text-xs text-slate-300 mb-1" style={{ fontSize: 12, color: '#cbd5e1', marginBottom: 4 }}>Password</Text>
-            <TextInput
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-50 mb-4"
-                style={{ backgroundColor: '#0f172a', borderColor: '#334155', borderWidth: 1, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8, color: '#f8fafc', marginBottom: 16 }}
-                placeholder="********"
-                placeholderTextColor="#4b5563"
-            />
+                        {errorMsg ? (
+                            <Text className="text-red-500 font-bold mb-4" style={{ color: '#ef4444', marginBottom: 16 }}>
+                                Error: {errorMsg}
+                            </Text>
+                        ) : null}
 
-            <Pressable
-                onPress={handleSubmit}
-                disabled={submitting}
-                className="bg-emerald-500 rounded-full py-3 items-center mb-4"
-                style={{ backgroundColor: '#10b981', borderRadius: 9999, paddingVertical: 12, alignItems: 'center', marginBottom: 16 }}
-            >
-                <Text className="text-slate-950 font-semibold text-sm" style={{ color: '#020617', fontWeight: '600', fontSize: 14 }}>
-                    {submitting ? "Signing in..." : "Sign in"}
-                </Text>
-            </Pressable>
+                        <View className="space-y-4">
+                            <View style={{ marginBottom: 16 }}>
+                                <Text className="text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider" style={{ color: '#cbd5e1', marginBottom: 8, fontSize: 12, textTransform: 'uppercase' }}>Email Address</Text>
+                                <TextInput
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    autoCapitalize="none"
+                                    keyboardType="email-address"
+                                    className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white"
+                                    style={{ backgroundColor: '#020617', borderColor: '#1e293b', borderWidth: 1, borderRadius: 12, padding: 12, color: 'white', fontSize: 16 }}
+                                    placeholder="you@expensex.com"
+                                    placeholderTextColor="#64748b"
+                                />
+                            </View>
 
-            <Text className="text-xs text-slate-400" style={{ fontSize: 12, color: '#94a3b8' }}>
-                Don't have an account?{" "}
-                <Link href="/register" className="text-emerald-400" style={{ color: '#34d399' }}>
-                    Register
-                </Link>
-            </Text>
-        </View>
+                            <View style={{ marginBottom: 24 }}>
+                                <Text className="text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider" style={{ color: '#cbd5e1', marginBottom: 8, fontSize: 12, textTransform: 'uppercase' }}>Password</Text>
+                                <TextInput
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    secureTextEntry
+                                    className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white"
+                                    style={{ backgroundColor: '#020617', borderColor: '#1e293b', borderWidth: 1, borderRadius: 12, padding: 12, color: 'white', fontSize: 16 }}
+                                    placeholder="••••••••"
+                                    placeholderTextColor="#64748b"
+                                />
+                            </View>
+
+                            <Pressable
+                                onPress={handleSubmit}
+                                disabled={submitting}
+                                className="bg-indigo-500 rounded-xl py-4 items-center"
+                                style={{ backgroundColor: '#6366f1', borderRadius: 12, paddingVertical: 16, alignItems: 'center' }}
+                            >
+                                <Text className="text-white font-bold text-base" style={{ fontFamily: 'Outfit_700Bold', color: 'white', fontSize: 16, fontWeight: 'bold' }}>
+                                    {submitting ? "Authenticating..." : "Sign In →"}
+                                </Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </PinnedCard>
+
+                <View className="mt-8 flex-row justify-center">
+                    <Text className="text-slate-500 font-medium" style={{ color: '#64748b' }}>New to ExpenseX? </Text>
+                    <Link href="/register" asChild>
+                        <Pressable>
+                            <Text className="text-indigo-400 font-bold" style={{ color: '#818cf8', fontWeight: 'bold' }}>Create Account</Text>
+                        </Pressable>
+                    </Link>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }

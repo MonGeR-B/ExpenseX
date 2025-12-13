@@ -1,14 +1,21 @@
 import { Stack } from "expo-router";
 import { AuthProvider, useAuth } from "../src/context/AuthContext";
 import { ActivityIndicator, View } from "react-native";
+import { useFonts, Outfit_400Regular, Outfit_700Bold, Outfit_900Black } from "@expo-google-fonts/outfit";
+import "../global.css";
 
 function RootNavigator() {
-    const { loading } = useAuth();
+    const { loading: authLoading } = useAuth();
+    const [fontsLoaded] = useFonts({
+        Outfit_400Regular,
+        Outfit_700Bold,
+        Outfit_900Black,
+    });
 
-    if (loading) {
+    if (authLoading || !fontsLoaded) {
         return (
-            <View className="flex-1 items-center justify-center bg-slate-950">
-                <ActivityIndicator />
+            <View className="flex-1 items-center justify-center bg-black">
+                <ActivityIndicator size="large" color="#10b981" />
             </View>
         );
     }
@@ -16,15 +23,15 @@ function RootNavigator() {
     return (
         <Stack
             screenOptions={{
-                headerStyle: { backgroundColor: "#020617" },
-                headerTintColor: "#e5e7eb",
-                contentStyle: { backgroundColor: "#020617" },
+                headerShown: false,
+                contentStyle: { backgroundColor: "#ffffff" },
             }}
         >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="login" options={{ title: "Login" }} />
-            <Stack.Screen name="register" options={{ title: "Register" }} />
-            <Stack.Screen name="dashboard" options={{ title: "Dashboard" }} />
+            <Stack.Screen name="login" options={{ title: "Welcome Back" }} />
+            <Stack.Screen name="register" options={{ title: "Create Account" }} />
+            <Stack.Screen name="add-expense" options={{ presentation: 'modal', title: "Add Expense" }} />
         </Stack>
     );
 }

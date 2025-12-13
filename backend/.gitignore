@@ -57,3 +57,6 @@ mobile/web-build/
 .vscode/
 *.swp
 *.swo
+
+ensure_user.py
+mobile_verify.py

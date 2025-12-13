@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 import { setAuthToken } from "../lib/api";
 
 interface AuthContextValue {
@@ -20,11 +21,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     useEffect(() => {
         const loadToken = async () => {
             try {
-                const stored = await AsyncStorage.getItem("expensx_token");
+                let stored: string | null = null;
+                if (Platform.OS === 'web') {
+                    stored = localStorage.getItem("expensx_token");
+                } else {
+                    stored = await SecureStore.getItemAsync("expensx_token");
+                }
+
                 if (stored) {
                     setToken(stored);
                     setAuthToken(stored);
                 }
+            } catch (e) {
+                console.error("Failed to load token", e);
             } finally {
                 setLoading(false);
             }
@@ -35,13 +44,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const login = async (newToken: string) => {
         setToken(newToken);
         setAuthToken(newToken);
-        await AsyncStorage.setItem("expensx_token", newToken);
+        if (Platform.OS === 'web') {
+            localStorage.setItem("expensx_token", newToken);
+        } else {
+            await SecureStore.setItemAsync("expensx_token", newToken);
+        }
     };
 
     const logout = async () => {
         setToken(null);
         setAuthToken(null);
-        await AsyncStorage.removeItem("expensx_token");
+        if (Platform.OS === 'web') {
+            localStorage.removeItem("expensx_token");
+        } else {
+            await SecureStore.deleteItemAsync("expensx_token");
+        }
     };
 
     return (

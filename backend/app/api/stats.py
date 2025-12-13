@@ -1,9 +1,10 @@
+```python
 # app/api/stats.py
 from datetime import date
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlalchemy import func
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy import func, extract
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -20,8 +21,22 @@ from app.schemas.stats import (
     CategoryStats,
     CategoryPoint,
 )
+import time
 
 router = APIRouter(prefix="/stats", tags=["stats"])
+
+# In-Memory Cache (Simple implementation for demonstration)
+CACHE = {}
+
+def get_cached(key: str, ttl: int = 60):
+    if key in CACHE:
+        val, ts = CACHE[key]
+        if time.time() - ts < ttl:
+            return val
+    return None
+
+def set_cached(key: str, val: any):
+    CACHE[key] = (val, time.time())
 
 
 def _get_year_month_or_default(year: Optional[int], month: Optional[int]) -> tuple[int, Optional[int]]:
@@ -38,6 +53,12 @@ def summary_stats(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    # Caching Layer
+    cache_key = f"summary_{current_user.id}_{year}_{month}"
+    cached = get_cached(cache_key)
+    if cached:
+        return cached
+
     """
     Summary for a given month (default: current month).
     """
@@ -84,7 +105,7 @@ def summary_stats(
     top_category_name = cat_row[0] if cat_row else None
     top_category_amount = float(cat_row[1]) if cat_row else None
 
-    return SummaryStats(
+    result = SummaryStats(
         period="month",
         year=y,
         month=m,
@@ -94,6 +115,9 @@ def summary_stats(
         top_category=top_category_name,
         top_category_amount=top_category_amount,
     )
+    
+    set_cached(cache_key, result) # Cache for 60 seconds (ttl is handled by get_cached)
+    return result
 
 
 @router.get("/monthly", response_model=MonthlyStats)
