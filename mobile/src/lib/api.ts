@@ -14,8 +14,9 @@ export const api = axios.create({
 });
 
 // Debug Logging
+// Debug Logging
 api.interceptors.request.use(req => {
-    console.log(`[API Request] ${req.method?.toUpperCase()} ${req.url}`, req.params || "");
+    console.log(`[API Request] ${req.method?.toUpperCase()} ${req.url} [Base: ${req.baseURL}]`); // Log Base URL
     return req;
 });
 
@@ -25,7 +26,16 @@ api.interceptors.response.use(
         return res;
     },
     err => {
-        console.error(`[API Error] ${err.message} ${err.code}`, err.response?.data);
+        if (err.response) {
+            // Server responded with a status code out of 2xx range
+            console.error(`[API Error] ${err.response.status} ${err.config.url}`, JSON.stringify(err.response.data, null, 2));
+        } else if (err.request) {
+            // Request was made but no response received
+            console.error(`[API Error] No Response from ${err.config.url}`, err.request);
+        } else {
+            // Something happened in setting up the request
+            console.error(`[API Error] Setup Error`, err.message);
+        }
         return Promise.reject(err);
     }
 );
@@ -108,6 +118,20 @@ export async function fetchSummaryStats(year?: number, month?: number) {
 export async function fetchCategories(): Promise<Category[]> {
     const res = await api.get<Category[]>("/categories/");
     return res.data;
+}
+
+export async function createCategory(name: string, icon: string = "🏷️", color: string = "#94a3b8"): Promise<Category> {
+    const res = await api.post("/categories/", { name, icon, color });
+    return res.data as Category;
+}
+
+export async function deleteCategory(id: number): Promise<boolean> {
+    try {
+        await api.delete(`/categories/${id}`);
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 export async function fetchBudgets(): Promise<Budget[]> {

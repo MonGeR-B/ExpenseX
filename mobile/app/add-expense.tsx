@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform, TouchableOpacity, ScrollView, Modal } from "react-native";
 import { useRouter } from "expo-router";
-import { createExpense, fetchCategories, type Category } from "../src/lib/api";
+import { createExpense, fetchCategories, createCategory, type Category } from "../src/lib/api";
 import { MobileContainer } from "../src/components/MobileContainer";
 import { MobileCard } from "../src/components/MobileCard";
-import { X } from "lucide-react-native";
+import { X, Plus } from "lucide-react-native";
 
 export default function AddExpenseScreen() {
     const router = useRouter();
@@ -13,6 +13,13 @@ export default function AddExpenseScreen() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [submitting, setSubmitting] = useState(false);
+
+    // New Category Modal State
+    const [modalVisible, setModalVisible] = useState(false);
+    const [newCatName, setNewCatName] = useState("");
+    const [newCatIcon, setNewCatIcon] = useState("🏷️");
+
+    const ICONS = ["🏷️", "🍔", "🚕", "🎬", "🛍️", "💡", "💊", "✈️", "🏠", "🎁", "📚", "💼", "🏋️", "🍕", "🍺"];
 
     const MOCK_CATEGORIES: Category[] = [
         { id: 1, name: "Food", color: "#f87171", icon: "🍔" },
@@ -24,6 +31,10 @@ export default function AddExpenseScreen() {
     ];
 
     useEffect(() => {
+        fetchCams();
+    }, []);
+
+    const fetchCams = () => {
         fetchCategories()
             .then(data => {
                 if (Array.isArray(data) && data.length > 0) {
@@ -36,7 +47,21 @@ export default function AddExpenseScreen() {
                 console.error(err);
                 setCategories(MOCK_CATEGORIES);
             });
-    }, []);
+    };
+
+    const handleCreateCategory = async () => {
+        if (!newCatName.trim()) return;
+        try {
+            const newCat = await createCategory(newCatName.trim(), newCatIcon);
+            setCategories([...categories, newCat]);
+            setSelectedCategory(newCat.id);
+            setModalVisible(false);
+            setNewCatName("");
+            setNewCatIcon("🏷️");
+        } catch (e) {
+            Alert.alert("Error", "Failed to create category");
+        }
+    };
 
     const handleSubmit = async () => {
         const amt = parseFloat(amount);
@@ -99,6 +124,27 @@ export default function AddExpenseScreen() {
                         {/* Category Selector */}
                         <Text className="text-slate-400 text-xs font-bold uppercase mb-4" style={{ color: '#94a3b8', fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 16 }}>Category</Text>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-8 -mx-2" style={{ marginBottom: 32, marginHorizontal: -8 }}>
+                            {/* New Category Button */}
+                            <TouchableOpacity
+                                onPress={() => setModalVisible(true)}
+                                className="mr-3 px-4 py-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 items-center justify-center"
+                                style={{
+                                    marginRight: 12,
+                                    paddingHorizontal: 16,
+                                    paddingVertical: 12,
+                                    borderRadius: 12,
+                                    borderWidth: 1,
+                                    borderStyle: 'dashed',
+                                    borderColor: '#cbd5e1',
+                                    backgroundColor: '#f8fafc',
+                                    flexDirection: 'row',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <Plus size={16} color="#64748b" />
+                                <Text className="ml-2 text-slate-500 font-bold" style={{ marginLeft: 8, color: '#64748b', fontWeight: 'bold' }}>New</Text>
+                            </TouchableOpacity>
+
                             {categories.map(c => (
                                 <TouchableOpacity
                                     key={c.id}
@@ -144,6 +190,63 @@ export default function AddExpenseScreen() {
                     </View>
                 </MobileCard>
             </ScrollView>
+
+            {/* New Category Modal */}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View className="flex-1 justify-center items-center bg-black/50" style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <View className="bg-white rounded-2xl p-6 w-4/5" style={{ backgroundColor: 'white', borderRadius: 16, padding: 24, width: '80%' }}>
+                        <Text className="text-xl font-bold mb-4 text-slate-900" style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 16, color: '#0f172a' }}>New Category</Text>
+
+                        <TextInput
+                            value={newCatName}
+                            onChangeText={setNewCatName}
+                            placeholder="Category Name (e.g. Gym)"
+                            className="border border-slate-200 rounded-xl p-4 mb-4 text-lg"
+                            style={{ borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 12, padding: 16, marginBottom: 16, fontSize: 18 }}
+                            autoFocus
+                        />
+
+                        {/* Icon Selector */}
+                        <Text className="text-slate-400 text-xs font-bold uppercase mb-2" style={{ color: '#94a3b8', fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 8 }}>Select Icon</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-6" style={{ marginBottom: 24 }}>
+                            {ICONS.map((icon, idx) => (
+                                <TouchableOpacity
+                                    key={idx}
+                                    onPress={() => setNewCatIcon(icon)}
+                                    className={`mr-2 w-10 h-10 rounded-full items-center justify-center border ${newCatIcon === icon ? 'bg-indigo-100 border-indigo-500' : 'bg-slate-50 border-slate-100'}`}
+                                    style={{
+                                        marginRight: 8,
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: 20,
+                                        borderWidth: 1,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        backgroundColor: newCatIcon === icon ? '#e0e7ff' : '#f8fafc',
+                                        borderColor: newCatIcon === icon ? '#6366f1' : '#f1f5f9'
+                                    }}
+                                >
+                                    <Text style={{ fontSize: 20 }}>{icon}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+
+                        <View className="flex-row justify-end space-x-3" style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 12 }}>
+                            <TouchableOpacity onPress={() => setModalVisible(false)} className="px-4 py-2">
+                                <Text className="text-slate-500 font-bold" style={{ color: '#64748b', fontWeight: 'bold' }}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleCreateCategory} className="bg-indigo-600 px-6 py-2 rounded-lg" style={{ backgroundColor: '#4f46e5', paddingHorizontal: 24, paddingVertical: 8, borderRadius: 8 }}>
+                                <Text className="text-white font-bold" style={{ color: 'white', fontWeight: 'bold' }}>Create</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </MobileContainer>
     );
 }

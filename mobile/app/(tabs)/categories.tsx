@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
-import { View, Text, ScrollView, RefreshControl } from "react-native";
+import { View, Text, ScrollView, RefreshControl, Pressable, Alert } from "react-native";
 import { MobileContainer } from "../../src/components/MobileContainer";
 import { MobileCard } from "../../src/components/MobileCard";
-import { fetchCategories, Category } from "../../src/lib/api";
+import { fetchCategories, deleteCategory, Category } from "../../src/lib/api";
 import { cache, CACHE_KEYS } from "../../src/lib/cache";
 import { useFocusEffect } from "expo-router";
 
@@ -54,6 +54,31 @@ export default function CategoriesScreen() {
         setRefreshing(false);
     };
 
+    const handleDelete = (cat: Category) => {
+        Alert.alert(
+            "Delete Category",
+            `Are you sure you want to delete "${cat.name}"?`,
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        const success = await deleteCategory(cat.id);
+                        if (success) {
+                            setCategories(prev => prev.filter(c => c.id !== cat.id));
+                            // Update cache
+                            const updated = categories.filter(c => c.id !== cat.id);
+                            cache.save(CACHE_KEYS.CATEGORIES, updated);
+                        } else {
+                            Alert.alert("Error", "Could not delete category.");
+                        }
+                    }
+                }
+            ]
+        );
+    };
+
     return (
         <MobileContainer>
             <ScrollView
@@ -64,18 +89,31 @@ export default function CategoriesScreen() {
                     <Text className="text-white text-3xl font-bold mb-6" style={{ fontFamily: 'Outfit_700Bold' }}>Categories</Text>
 
                     <MobileCard className="min-h-[500px]">
+                        <Text className="text-slate-400 text-xs mb-4 text-center">Long press to delete</Text>
                         <View className="flex-row flex-wrap justify-between gap-y-6">
                             {categories.map((cat) => (
-                                <View key={cat.id} className="w-[48%] items-center bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <Pressable
+                                    key={cat.id}
+                                    onLongPress={() => handleDelete(cat)}
+                                    className="w-[48%] items-center bg-slate-50 p-4 rounded-xl border border-slate-100 active:bg-red-50 active:border-red-200"
+                                    style={({ pressed }) => ({
+                                        width: '48%',
+                                        alignItems: 'center',
+                                        backgroundColor: pressed ? '#fef2f2' : '#f8fafc',
+                                        padding: 16,
+                                        borderRadius: 12,
+                                        borderWidth: 1,
+                                        borderColor: pressed ? '#fecaca' : '#f1f5f9'
+                                    })}
+                                >
                                     <View className="h-12 w-12 rounded-full items-center justify-center mb-2" style={{ backgroundColor: cat.color || '#e2e8f0' }}>
-                                        {/* Placeholder Icon if no icon field */}
-                                        <Text className="text-xl">🏷️</Text>
+                                        <Text className="text-xl">{cat.icon || "🏷️"}</Text>
                                     </View>
                                     <Text className="font-bold text-slate-900 text-center">{cat.name}</Text>
                                     <View className="w-full h-1 bg-slate-200 mt-2 rounded-full overflow-hidden">
                                         <View className="h-full bg-slate-400 w-1/2" />
                                     </View>
-                                </View>
+                                </Pressable>
                             ))}
                         </View>
                         {categories.length === 0 && (

@@ -1,11 +1,11 @@
 "use client";
 
 import { useAuthStore } from "@/store/auth";
-import { LogOut } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { AddExpenseDialog } from "@/components/dashboard/AddExpenseDialog";
 
-export function Topbar() {
+export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
     const { user, logout } = useAuthStore();
     const router = useRouter();
 
@@ -16,13 +16,21 @@ export function Topbar() {
 
     return (
         <header className="flex items-center justify-between gap-4 border-b border-white/5 bg-[#111111] px-4 py-3 md:px-6 sticky top-0 z-50">
-            <div className="space-y-1">
-                <p className="text-xs uppercase tracking-widest text-slate-500 font-bold">
-                    Overview
-                </p>
-                <h1 className="text-xl md:text-2xl font-black tracking-tight text-white">
-                    Hello, {user?.email?.split('@')[0] || 'User'} 👋
-                </h1>
+            <div className="flex items-center gap-4">
+                <button
+                    onClick={onMenuClick}
+                    className="md:hidden p-2 -ml-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/5"
+                >
+                    <Menu size={20} />
+                </button>
+                <div className="space-y-1">
+                    <p className="hidden md:block text-xs uppercase tracking-widest text-slate-500 font-bold">
+                        Overview
+                    </p>
+                    <h1 className="text-xl md:text-2xl font-black tracking-tight text-white">
+                        Hello, {user?.email?.split('@')[0] || 'User'} 👋
+                    </h1>
+                </div>
             </div>
 
             <div className="flex items-center gap-3">

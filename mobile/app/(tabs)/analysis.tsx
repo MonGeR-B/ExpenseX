@@ -21,14 +21,16 @@ export default function AnalysisScreen() {
             try {
                 if (viewMode === 'daily') {
                     const daily = await fetchDailyStats();
-                    points = daily.points.slice(-7).map((p: any) => p.total_amount);
+                    const today = new Date().getDate();
+                    const start = Math.max(0, today - 7);
+                    points = daily.points.slice(start, today).map((p: any) => p.total_amount);
                 } else {
                     const monthly = await fetchMonthlyStats();
                     points = monthly.points.map((p: any) => p.total_amount);
                 }
             } catch (e) { console.error("Chart fetch failed", e); }
 
-            if (points.length === 0) points = MOCK_POINTS;
+            if (points.length === 0 || Math.max(...points) === 0) points = MOCK_POINTS;
             setChartData(points);
 
             // Load Categories
@@ -124,11 +126,17 @@ export default function AnalysisScreen() {
                                             style={{
                                                 width: 16,
                                                 height: Math.max(height, 4),
-                                                backgroundColor: isMock ? '#e9d5ff' : '#a855f7', // Lighter purple for mock
+                                                backgroundColor: isMock ? '#e9d5ff' : '#a855f7',
                                                 borderTopLeftRadius: 4,
                                                 borderTopRightRadius: 4
                                             }}
                                         />
+                                        <Text className="text-[10px] text-slate-400 font-bold" style={{ fontSize: 10, color: '#94a3b8', fontWeight: 'bold' }}>
+                                            {viewMode === 'daily'
+                                                ? ['S', 'M', 'T', 'W', 'T', 'F', 'S'][i % 7]
+                                                : ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][i % 12]
+                                            }
+                                        </Text>
                                     </View>
                                 )
                             })}

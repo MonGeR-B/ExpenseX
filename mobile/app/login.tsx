@@ -23,9 +23,9 @@ export default function LoginScreen() {
         try {
             setSubmitting(true);
 
-            // Create a timeout promise
+            // Create a timeout promise (Extended to 15s for slow networks)
             const timeout = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error("Request timed out check network.")), 5000);
+                setTimeout(() => reject(new Error("Request timed out (15s). Check IP/Firewall.")), 15000);
             });
 
             // Race the login against the timeout

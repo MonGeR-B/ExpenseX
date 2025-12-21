@@ -1,4 +1,3 @@
-```python
 # app/api/stats.py
 from datetime import date
 from typing import Optional

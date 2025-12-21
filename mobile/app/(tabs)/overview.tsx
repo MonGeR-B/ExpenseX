@@ -21,13 +21,26 @@ export default function OverviewScreen() {
 
     const loadData = useCallback(async () => {
         try {
-            // Parallel Fetching for <250ms load time
-            const [sumData, expenses, cats, daily] = await Promise.all([
+            // Parallel Fetching with Resilience (Promise.allSettled)
+            const results = await Promise.allSettled([
                 fetchSummaryStats(),
                 fetchExpenses(),
                 fetchCategoryStats(),
                 fetchDailyStats()
             ]);
+
+            const sumData = results[0].status === 'fulfilled' ? results[0].value : {};
+            const expenses = results[1].status === 'fulfilled' ? results[1].value : [];
+            const cats = results[2].status === 'fulfilled' ? results[2].value : [];
+            const daily = results[3].status === 'fulfilled' ? results[3].value : [];
+
+            // Log failures for debugging
+            results.forEach((res, index) => {
+                if (res.status === 'rejected') {
+                    const endpoints = ['Summary', 'Expenses', 'Categories', 'Daily'];
+                    console.error(`[Dashboard Error] ${endpoints[index]} fetch failed`, res.reason);
+                }
+            });
 
             setSummary(sumData || {});
 
@@ -53,8 +66,16 @@ export default function OverviewScreen() {
             // Process Daily Stats for Chart
             // Expecting daily.points = [{ date: '...', total_amount: 100 }, ...]
             if (daily && Array.isArray(daily.points)) {
-                // Take last 7 days
-                const last7 = daily.points.slice(-7);
+                // Take last 7 days ending TODAY
+                const today = new Date().getDate();
+                const start = Math.max(0, today - 7);
+                const end = today;
+                // Note: points are 1-indexed (Day 1 at index 0), so Day T is at index T-1.
+                // We want to include Today. So slice up to 'today' (which is index T) exclusive?
+                // Index 0 = Day 1. Index 19 = Day 20. Index 20 = Day 21 (Today).
+                // So if today is 21, we want index 20 included. Slice(start, 21).
+
+                const last7 = daily.points.slice(start, end);
                 setDailyStats(last7);
             }
 
@@ -189,8 +210,8 @@ export default function OverviewScreen() {
                             {displayDaily.map((d: any, i: number) => {
                                 const height = maxChartValue > 0 ? (d.total_amount / maxChartValue) * 100 : 0;
                                 const dateObj = new Date(d.date);
-                                // Fallback key if date invalid
-                                const dayLabel = !isNaN(dateObj.getTime()) ? dateObj.toLocaleDateString('en-US', { weekday: 'narrow' }) : ['M', 'T', 'W', 'T', 'F', 'S', 'S'][i % 7];
+                                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                                const dayLabel = !isNaN(dateObj.getTime()) ? days[dateObj.getDay()] : days[i % 7];
                                 return (
                                     <View key={i} className="items-center" style={{ alignItems: 'center' }}>
                                         <View
