@@ -88,29 +88,29 @@ export default function CategoriesScreen() {
                 <View className="p-6">
                     <Text className="text-white text-3xl font-bold mb-6" style={{ fontFamily: 'Outfit_700Bold' }}>Categories</Text>
 
-                    <MobileCard className="min-h-[500px]">
+                    <MobileCard className="min-h-[500px] rounded-3xl">
                         <Text className="text-slate-400 text-xs mb-4 text-center">Long press to delete</Text>
                         <View className="flex-row flex-wrap justify-between gap-y-6">
                             {categories.map((cat) => (
                                 <Pressable
                                     key={cat.id}
                                     onLongPress={() => handleDelete(cat)}
-                                    className="w-[48%] items-center bg-slate-50 p-4 rounded-xl border border-slate-100 active:bg-red-50 active:border-red-200"
+                                    className="w-[48%] items-center bg-white/5 p-4 rounded-xl border border-white/10 active:bg-red-500/10 active:border-red-500/50"
                                     style={({ pressed }) => ({
                                         width: '48%',
                                         alignItems: 'center',
-                                        backgroundColor: pressed ? '#fef2f2' : '#f8fafc',
+                                        backgroundColor: pressed ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)',
                                         padding: 16,
                                         borderRadius: 12,
                                         borderWidth: 1,
-                                        borderColor: pressed ? '#fecaca' : '#f1f5f9'
+                                        borderColor: pressed ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.1)'
                                     })}
                                 >
-                                    <View className="h-12 w-12 rounded-full items-center justify-center mb-2" style={{ backgroundColor: cat.color || '#e2e8f0' }}>
+                                    <View className="h-12 w-12 rounded-full items-center justify-center mb-2" style={{ backgroundColor: cat.color ? cat.color + '40' : '#334155' }}>
                                         <Text className="text-xl">{cat.icon || "🏷️"}</Text>
                                     </View>
-                                    <Text className="font-bold text-slate-900 text-center">{cat.name}</Text>
-                                    <View className="w-full h-1 bg-slate-200 mt-2 rounded-full overflow-hidden">
+                                    <Text className="font-bold text-white text-center">{cat.name}</Text>
+                                    <View className="w-full h-1 bg-white/10 mt-2 rounded-full overflow-hidden">
                                         <View className="h-full bg-slate-400 w-1/2" />
                                     </View>
                                 </Pressable>

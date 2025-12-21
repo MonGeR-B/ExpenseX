@@ -105,13 +105,12 @@ export async function createExpense(payload: {
     return res.data as Expense;
 }
 
-export async function fetchSummaryStats(year?: number, month?: number) {
+export async function fetchSummaryStats(year?: number, month?: number, timestamp?: number) {
     const params: any = {};
     if (year) params.year = year;
     if (month) params.month = month;
-    const res = await api.get("/stats/summary", { params }); // Stats endpoints usually don't have trailing slashes in standard FastAPI practices, but let's check backend if possible. 
-    // Wait, the log showed "/api/stats/summary 200 OK". It works WITHOUT slash. 
-    // The log showed "/api/expenses 307" -> "/api/expenses/ 401". Expenses NEEDS slash.
+    if (timestamp) params._t = timestamp;
+    const res = await api.get("/stats/summary", { params });
     return res.data;
 }
 
@@ -139,25 +138,28 @@ export async function fetchBudgets(): Promise<Budget[]> {
     return res.data;
 }
 
-export async function fetchDailyStats(year?: number, month?: number) {
+export async function fetchDailyStats(year?: number, month?: number, timestamp?: number) {
     const params: any = {};
     if (year) params.year = year;
     if (month) params.month = month;
+    if (timestamp) params._t = timestamp;
     const res = await api.get("/stats/daily", { params });
     return res.data;
 }
 
-export async function fetchMonthlyStats(year?: number) {
+export async function fetchMonthlyStats(year?: number, timestamp?: number) {
     const params: any = {};
     if (year) params.year = year;
+    if (timestamp) params._t = timestamp;
     const res = await api.get("/stats/monthly", { params });
     return res.data;
 }
 
-export async function fetchCategoryStats(year?: number, month?: number) {
+export async function fetchCategoryStats(year?: number, month?: number, timestamp?: number) {
     const params: any = {};
     if (year) params.year = year;
     if (month) params.month = month;
+    if (timestamp) params._t = timestamp;
     const res = await api.get("/stats/categories", { params });
     return res.data;
 }

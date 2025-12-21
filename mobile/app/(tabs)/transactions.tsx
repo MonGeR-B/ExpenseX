@@ -98,14 +98,16 @@ export default function TransactionsScreen() {
         setRefreshing(false);
     };
 
-    // Helper to group by date (Simple: Today vs Others for now to match UI request of grouping)
     const isToday = (dateString: string) => {
-        const d = new Date(dateString);
-        const today = new Date();
-        return d.getDate() === today.getDate() &&
-            d.getMonth() === today.getMonth() &&
-            d.getFullYear() === today.getFullYear();
+        const today = new Date().toLocaleDateString();
+        return dateString === today;
     };
+
+    // Helper to group by date (Simple: Today vs Others for now to match UI request of grouping)
+    // NOTE: isToday is defined above.
+
+    // const todayExpenses = expenses.filter(e => isToday(e.date));
+    // const olderExpenses = expenses.filter(e => !isToday(e.date));
 
     const todayExpenses = expenses.filter(e => isToday(e.date));
     const olderExpenses = expenses.filter(e => !isToday(e.date));
@@ -124,6 +126,7 @@ export default function TransactionsScreen() {
     return (
         <MobileContainer>
             <ScrollView
+                className="flex-1"
                 contentContainerStyle={{ paddingBottom: 100 }}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />}
             >
@@ -132,38 +135,40 @@ export default function TransactionsScreen() {
                     <Text className="text-white text-3xl font-bold" style={{ color: 'white', fontSize: 30, fontFamily: 'Outfit_700Bold' }}>Transactions</Text>
                 </View>
 
-                {/* Main White Island */}
-                <MobileCard className="mx-6 min-h-[500px]" style={{ marginHorizontal: 24, minHeight: 500 }}>
+                {/* Filters (Mock) */}
+                <View className="px-6 mb-6 flex-row gap-3" style={{ paddingHorizontal: 24, marginBottom: 24, flexDirection: 'row', gap: 12 }}>
+                    <View className="bg-white/10 px-4 py-2 rounded-full border border-white/10" style={{ backgroundColor: 'rgba(255,255,255,0.1)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' }}>
+                        <Text className="text-white font-bold text-xs" style={{ color: 'white', fontWeight: 'bold', fontSize: 12 }}>All Time</Text>
+                    </View>
+                    <View className="bg-white/5 px-4 py-2 rounded-full border border-white/10" style={{ backgroundColor: 'rgba(255,255,255,0.05)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' }}>
+                        <Text className="text-slate-400 font-bold text-xs" style={{ color: '#94a3b8', fontWeight: 'bold', fontSize: 12 }}>Category</Text>
+                    </View>
+                </View>
 
-                    {Object.keys(groupedTxns).length > 0 ? Object.keys(groupedTxns).map((dateKey) => (
-                        <View key={dateKey} className="mb-6">
-                            <Text className="text-slate-400 font-bold mb-4 text-xs uppercase tracking-wider" style={{ color: '#94a3b8', fontWeight: 'bold', marginBottom: 16, fontSize: 12, letterSpacing: 1, textTransform: 'uppercase' }}>
-                                {isToday(dateKey) ? "Today" : dateKey}
-                            </Text>
-                            <View className="gap-6" style={{ gap: 24 }}>
-                                {groupedTxns[dateKey].map(t => (
-                                    <View key={t.id} className="flex-row items-center" style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                        <View className="h-12 w-12 bg-slate-50 rounded-full items-center justify-center mr-4" style={{ height: 48, width: 48, backgroundColor: '#f8fafc', borderRadius: 24, alignItems: 'center', justifyContent: 'center', marginRight: 16 }}>
-                                            <Text style={{ fontSize: 20 }}>{getIcon(t.category?.name)}</Text>
+                {/* Grouped Lists */}
+                {Object.keys(groupedTxns).length === 0 ? (
+                    <Text className="text-slate-400 text-center mt-10" style={{ color: '#94a3b8', textAlign: 'center', marginTop: 40 }}>No transactions found.</Text>
+                ) : (
+                    Object.entries(groupedTxns).sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime()).map(([date, txns]) => (
+                        <View key={date} className="mb-6 px-6" style={{ marginBottom: 24, paddingHorizontal: 24 }}>
+                            <Text className="text-slate-400 font-bold mb-3 text-xs uppercase" style={{ color: '#94a3b8', fontWeight: 'bold', marginBottom: 12, fontSize: 12, textTransform: 'uppercase' }}>{date}</Text>
+                            {txns.map((tx) => (
+                                <MobileCard key={tx.id} className="rounded-3xl mb-3 p-4 flex-row items-center justify-between" style={{ marginBottom: 12, padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <View className="flex-row items-center gap-4" style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+                                        <View className="h-10 w-10 bg-white/10 rounded-full items-center justify-center" style={{ height: 40, width: 40, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 20, alignItems: 'center', justifyContent: 'center' }}>
+                                            <Text className="text-lg">{tx.category && tx.category.icon ? tx.category.icon : "💸"}</Text>
                                         </View>
-                                        <View className="flex-1">
-                                            <View className="flex-row items-center gap-2" style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                                                <Text className="text-slate-900 font-bold text-base" style={{ color: '#0f172a', fontWeight: 'bold', fontSize: 16 }}>{t.category?.name || "Uncategorized"}</Text>
-                                            </View>
-                                            <Text className="text-slate-400 text-xs" style={{ color: '#94a3b8', fontSize: 12 }}>{t.date} | {t.description || "No description"}</Text>
+                                        <View>
+                                            <Text className="text-white font-bold text-base" style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{tx.description}</Text>
+                                            <Text className="text-slate-400 text-xs" style={{ color: '#94a3b8', fontSize: 12 }}>{tx.category ? tx.category.name : 'Uncategorized'}</Text>
                                         </View>
-                                        <Text className="text-slate-900 font-bold text-base" style={{ color: '#0f172a', fontWeight: 'bold', fontSize: 16 }}>₹{t.amount}</Text>
                                     </View>
-                                ))}
-                            </View>
+                                    <Text className="text-white font-bold text-base" style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>-₹{tx.amount.toLocaleString()}</Text>
+                                </MobileCard>
+                            ))}
                         </View>
-                    )) : (
-                        <View className="items-center justify-center py-20">
-                            <Text className="text-slate-400 text-base">No transactions to show.</Text>
-                        </View>
-                    )}
-
-                </MobileCard>
+                    ))
+                )}
             </ScrollView>
         </MobileContainer>
     );

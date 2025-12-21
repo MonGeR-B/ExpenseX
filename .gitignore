@@ -106,3 +106,5 @@ test_api_v1.py
 backend_debug.log
 backend_error.log
 build_error*.log
+course.md
+PLAN.md

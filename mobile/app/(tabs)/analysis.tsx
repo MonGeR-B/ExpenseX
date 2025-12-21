@@ -16,44 +16,41 @@ export default function AnalysisScreen() {
         try {
             // Load Chart Data
             let points: number[] = [];
-            const MOCK_POINTS = [40, 25, 60, 30, 80, 50, 70];
+            const ts = Date.now();
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
 
             try {
                 if (viewMode === 'daily') {
-                    const daily = await fetchDailyStats();
+                    const daily = await fetchDailyStats(year, month, ts);
                     const today = new Date().getDate();
                     const start = Math.max(0, today - 7);
-                    points = daily.points.slice(start, today).map((p: any) => p.total_amount);
+                    // Ensure points exist
+                    if (daily.points) {
+                        points = daily.points.slice(start, today).map((p: any) => p.total_amount);
+                    }
                 } else {
-                    const monthly = await fetchMonthlyStats();
-                    points = monthly.points.map((p: any) => p.total_amount);
+                    const monthly = await fetchMonthlyStats(year, ts);
+                    if (monthly.points) {
+                        points = monthly.points.map((p: any) => p.total_amount);
+                    }
                 }
             } catch (e) { console.error("Chart fetch failed", e); }
 
-            if (points.length === 0 || Math.max(...points) === 0) points = MOCK_POINTS;
+            // No Mock Fallback
             setChartData(points);
 
             // Load Categories
             let catsList = [];
             try {
-                const cats = await fetchCategoryStats();
+                const cats = await fetchCategoryStats(year, month, ts);
                 catsList = cats.categories || [];
             } catch (e) { console.error("Cat fetch failed", e); }
 
-            if (catsList.length > 0) {
-                setCategoryData(catsList);
-                const total = catsList.reduce((acc: number, curr: any) => acc + curr.total_amount, 0);
-                setTotalSpent(total);
-            } else {
-                // Mock Categories
-                const MOCK_CATS = [
-                    { category_name: 'Food', total_amount: 1630 },
-                    { category_name: 'Alcohol', total_amount: 3000 },
-                    { category_name: 'Rent', total_amount: 4000 }
-                ];
-                setCategoryData(MOCK_CATS);
-                setTotalSpent(8630);
-            }
+            setCategoryData(catsList);
+            const total = catsList.reduce((acc: number, curr: any) => acc + curr.total_amount, 0);
+            setTotalSpent(total);
 
         } catch (error) {
             console.error(error);
@@ -87,99 +84,84 @@ export default function AnalysisScreen() {
                 </View>
 
                 {/* Main White Island */}
-                <MobileCard className="mx-6 min-h-[600px]" style={{ marginHorizontal: 24, minHeight: 600 }}>
+                <MobileCard className="mx-6 min-h-[600px] rounded-3xl" style={{ marginHorizontal: 24, minHeight: 600 }}>
 
                     {/* Spending Trends Chart */}
                     <View className="mb-8">
                         <View className="flex-row justify-between items-center mb-6" style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                            <Text className="text-slate-900 font-bold text-lg" style={{ color: '#0f172a', fontWeight: 'bold', fontSize: 18 }}>Analytics</Text>
-                            <View className="flex-row bg-slate-100 rounded-lg p-1" style={{ flexDirection: 'row', backgroundColor: '#f1f5f9', borderRadius: 8, padding: 4 }}>
+                            <Text className="text-white font-bold text-lg" style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Analytics</Text>
+                            <View className="flex-row bg-white/10 rounded-lg p-1" style={{ flexDirection: 'row', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 8, padding: 4 }}>
                                 <Pressable
                                     onPress={() => setViewMode('daily')}
                                     className={`px-3 py-1 rounded-md ${viewMode === 'daily' ? 'bg-white shadow-sm' : ''}`}
                                     style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 6, backgroundColor: viewMode === 'daily' ? 'white' : 'transparent' }}
                                 >
-                                    <Text className={`text-xs font-bold ${viewMode === 'daily' ? 'text-slate-900' : 'text-slate-400'}`} style={{ fontSize: 12, fontWeight: 'bold', color: viewMode === 'daily' ? '#0f172a' : '#94a3b8' }}>Daily</Text>
+                                    <Text className={`text-xs font-bold ${viewMode === 'daily' ? 'text-black' : 'text-slate-400'}`} style={{ fontSize: 12, fontWeight: 'bold', color: viewMode === 'daily' ? 'black' : '#94a3b8' }}>Daily</Text>
                                 </Pressable>
                                 <Pressable
                                     onPress={() => setViewMode('monthly')}
                                     className={`px-3 py-1 rounded-md ${viewMode === 'monthly' ? 'bg-white shadow-sm' : ''}`}
                                     style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 6, backgroundColor: viewMode === 'monthly' ? 'white' : 'transparent' }}
                                 >
-                                    <Text className={`text-xs font-bold ${viewMode === 'monthly' ? 'text-slate-900' : 'text-slate-400'}`} style={{ fontSize: 12, fontWeight: 'bold', color: viewMode === 'monthly' ? '#0f172a' : '#94a3b8' }}>Monthly</Text>
+                                    <Text className={`text-xs font-bold ${viewMode === 'monthly' ? 'text-black' : 'text-slate-400'}`} style={{ fontSize: 12, fontWeight: 'bold', color: viewMode === 'monthly' ? 'black' : '#94a3b8' }}>Monthly</Text>
                                 </Pressable>
                             </View>
                         </View>
 
-                        {/* Dynamic Bar Chart */}
-                        <View className="h-40 flex-row items-end justify-between px-2" style={{ height: 160, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', paddingHorizontal: 8 }}>
-                            {(chartData.length > 0 ? chartData : [40, 25, 60, 30, 80, 50, 70]).map((h, i) => {
-                                const dataToUse = chartData.length > 0 ? chartData : [40, 25, 60, 30, 80, 50, 70];
-                                const max = Math.max(...dataToUse);
-                                const height = max > 0 ? (h / max) * 120 : 0; // Scale to fit 120px height
-                                const isMock = chartData.length === 0;
+                        {/* Chart Bars */}
+                        <View className="flex-row items-end justify-between h-52 mb-12 p-4" style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', height: 208, marginBottom: 48 }}>
+                            {chartData.map((val: number, i: number) => {
+                                const max = Math.max(...chartData, 1);
+                                const height = (val / max) * 100;
+                                const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+                                const months = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+
+                                // Simple logic for label - in real app, sync with data date
+                                let label = "";
+                                if (viewMode === 'daily') {
+                                    const today = new Date().getDay(); // 0-6
+                                    // If we are showing last 7 days ending today.
+                                    // data[6] is today. data[0] is today-6.
+                                    // so index i corresponds to (today - 6 + i).
+                                    const targetDay = (today - 6 + i + 7) % 7;
+                                    label = days[targetDay];
+                                } else {
+                                    label = months[i % 12];
+                                }
 
                                 return (
-                                    <View key={i} className="items-center gap-2" style={{ alignItems: 'center', gap: 8 }}>
-                                        <View
-                                            className="w-4 bg-purple-500 rounded-t-sm"
-                                            style={{
-                                                width: 16,
-                                                height: Math.max(height, 4),
-                                                backgroundColor: isMock ? '#e9d5ff' : '#a855f7',
-                                                borderTopLeftRadius: 4,
-                                                borderTopRightRadius: 4
-                                            }}
-                                        />
-                                        <Text className="text-[10px] text-slate-400 font-bold" style={{ fontSize: 10, color: '#94a3b8', fontWeight: 'bold' }}>
-                                            {viewMode === 'daily'
-                                                ? ['S', 'M', 'T', 'W', 'T', 'F', 'S'][i % 7]
-                                                : ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][i % 12]
-                                            }
-                                        </Text>
+                                    <View key={i} className="items-center flex-1" style={{ alignItems: 'center', flex: 1 }}>
+                                        <View className="w-4 bg-white/10 rounded-full overflow-hidden" style={{ width: 16, height: '100%', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 999, justifyContent: 'flex-end' }}>
+                                            <View
+                                                className="w-full bg-indigo-500 rounded-full absolute bottom-0"
+                                                style={{
+                                                    width: '100%',
+                                                    height: `${Math.max(height * 0.85, 5)}%`,
+                                                    backgroundColor: '#6366f1',
+                                                    borderRadius: 999,
+                                                    position: 'absolute',
+                                                    bottom: 0
+                                                }}
+                                            />
+                                        </View>
+                                        <Text className="text-[10px] text-slate-400 mt-2 font-medium" style={{ fontSize: 10, color: '#94a3b8', marginTop: 8, fontWeight: '500' }}>{label}</Text>
                                     </View>
                                 )
                             })}
                         </View>
-                        {chartData.length === 0 && (
-                            <Text className="text-slate-400 text-[10px] text-center mt-2 italic" style={{ fontSize: 10, textAlign: 'center', marginTop: 8, fontStyle: 'italic', color: '#94a3b8' }}>Demo Data (Start adding expenses to see yours!)</Text>
-                        )}
-                    </View>
 
-                    <View className="h-[1px] bg-slate-100 my-4" style={{ height: 1, backgroundColor: '#f1f5f9', marginVertical: 16 }} />
-
-                    {/* Distribution Chart */}
-                    <View>
-                        <Text className="text-slate-900 font-bold text-lg mb-6" style={{ color: '#0f172a', fontWeight: 'bold', fontSize: 18, marginBottom: 24 }}>Distribution - Where it goes</Text>
-
-                        {/* Donut Chart (Simulated) */}
-                        <View className="items-center justify-center mb-8 relative" style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 32 }}>
-                            <View className="h-48 w-48 rounded-full border-[20px] border-slate-100 relative items-center justify-center" style={{ height: 192, width: 192, borderRadius: 96, borderWidth: 20, borderColor: '#f1f5f9', alignItems: 'center', justifyContent: 'center' }}>
-                                <Text className="text-slate-400 text-sm" style={{ color: '#94a3b8', fontSize: 14 }}>Total</Text>
-                                <Text className="text-slate-900 text-2xl font-bold" style={{ color: '#0f172a', fontSize: 24, fontWeight: 'bold' }}>
-                                    {totalSpent >= 1000 ? `${(totalSpent / 1000).toFixed(1)}k` : (totalSpent || "8.7k")}
-                                </Text>
-                            </View>
-                        </View>
-
-                        {/* Legend */}
-                        <View className="gap-3" style={{ gap: 12 }}>
-                            {(categoryData.length > 0 ? categoryData : [
-                                { category_name: 'Food', total_amount: 1630 },
-                                { category_name: 'Alcohol', total_amount: 3000 },
-                                { category_name: 'Rent', total_amount: 4000 }
-                            ]).map((d: any, i: number) => (
-                                <View key={i} className="flex-row items-center justify-between" style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <View className="flex-row items-center gap-3" style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                                        <View className="h-3 w-3 rounded-full" style={{ height: 12, width: 12, borderRadius: 6, backgroundColor: COLORS[i % COLORS.length] }} />
-                                        <Text className="text-slate-600 font-medium" style={{ color: '#475569', fontWeight: '500' }}>{d.category_name}</Text>
-                                    </View>
-                                    <Text className="text-slate-900 font-bold" style={{ color: '#0f172a', fontWeight: 'bold' }}>₹{d.total_amount.toLocaleString()}</Text>
+                        {/* Breakdown */}
+                        <Text className="text-white font-bold mb-6 text-lg" style={{ color: 'white', fontWeight: 'bold', marginBottom: 24, fontSize: 18 }}>Category Breakdown</Text>
+                        {categoryData.map((c: any, i: number) => (
+                            <View key={i} className="flex-row justify-between items-center mb-4" style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                                <View className="flex-row items-center gap-3" style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                                    <View className="w-3 h-3 rounded-full" style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: COLORS[i % COLORS.length] }} />
+                                    <Text className="text-slate-300 font-medium text-base" style={{ color: '#cbd5e1', fontWeight: '500', fontSize: 16 }}>{c.category_name}</Text>
                                 </View>
-                            ))}
-                        </View>
+                                <Text className="text-white font-bold text-base" style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>₹{c.total_amount}</Text>
+                            </View>
+                        ))}
                     </View>
-
                 </MobileCard>
             </ScrollView>
         </MobileContainer>
