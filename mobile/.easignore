@@ -1,0 +1,19 @@
+# EAS Build Ignore
+# We specify this to override the default fallback to .gitignore
+# This ensures *.png files (which are ignored in root .gitignore) are uploaded to EAS
+
+# Ignore node junk
+node_modules
+.expo
+.expo-shared
+
+# Ignore env
+.env
+
+# Ignore logs
+*.log
+
+# DO NOT IGNORE ASSETS
+
+.env.local
+.DS_Store
