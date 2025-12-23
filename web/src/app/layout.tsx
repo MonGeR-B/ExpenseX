@@ -1,6 +1,7 @@
 // web/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "ExpenseX Dashboard",
@@ -26,7 +27,10 @@ export default function RootLayout({
       <body className={`min-h-screen bg-black text-white ${outfit.className}`} suppressHydrationWarning>
         {children}
         <Toaster theme="dark" position="top-center" />
+        <Analytics />
       </body>
     </html>
   );
 }
+
+
