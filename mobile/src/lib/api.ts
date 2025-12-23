@@ -13,19 +13,12 @@ export const api = axios.create({
     baseURL: API_BASE_URL,
 });
 
-// Debug Logging
-// Debug Logging
-api.interceptors.request.use(req => {
-    console.log(`[API Request] ${req.method?.toUpperCase()} ${req.url} [Base: ${req.baseURL}]`); // Log Base URL
-    return req;
-});
+// Debug Logging - Errors Only
+api.interceptors.request.use(req => req);
 
 api.interceptors.response.use(
-    res => {
-        console.log(`[API Response] ${res.status} ${res.config.url}`, res.data);
-        return res;
-    },
-    err => {
+    res => res,
+    (err: any) => {
         if (err.response) {
             // Server responded with a status code out of 2xx range
             console.error(`[API Error] ${err.response.status} ${err.config.url}`, JSON.stringify(err.response.data, null, 2));
@@ -83,15 +76,18 @@ export interface Category {
 
 export interface Budget {
     id: number;
+    category_id: number | null;
     amount: number;
     spent: number;
     percentage: number;
-    category?: Category;
+    category?: Category | null;
     month: string;
 }
 
-export async function fetchExpenses(): Promise<Expense[]> {
-    const res = await api.get<Expense[]>("/expenses/");
+export async function fetchExpenses(timestamp?: number): Promise<Expense[]> {
+    const params: any = {};
+    if (timestamp) params._t = timestamp;
+    const res = await api.get<Expense[]>("/expenses/", { params });
     return res.data;
 }
 
@@ -124,18 +120,26 @@ export async function createCategory(name: string, icon: string = "🏷️", col
     return res.data as Category;
 }
 
-export async function deleteCategory(id: number): Promise<boolean> {
-    try {
-        await api.delete(`/categories/${id}`);
-        return true;
-    } catch {
-        return false;
-    }
+export async function deleteCategory(id: number): Promise<void> {
+    await api.delete(`/categories/${id}`);
 }
 
 export async function fetchBudgets(): Promise<Budget[]> {
     const res = await api.get<Budget[]>("/budgets/");
     return res.data;
+}
+
+export async function createBudget(payload: {
+    amount: number;
+    month: string;
+    category_id?: number | null;
+}): Promise<Budget> {
+    const res = await api.post("/budgets/", payload);
+    return res.data as Budget;
+}
+
+export async function deleteBudget(id: number): Promise<void> {
+    await api.delete(`/budgets/${id}`);
 }
 
 export async function fetchDailyStats(year?: number, month?: number, timestamp?: number) {

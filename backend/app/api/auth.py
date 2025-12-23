@@ -27,6 +27,26 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    # Seed Default Categories
+    from app.models.category import Category
+    default_cats = [
+        {"name": "Food", "icon": "🍔", "color": "#f87171"},
+        {"name": "Transport", "icon": "🚗", "color": "#60a5fa"},
+        {"name": "Entertainment", "icon": "🎬", "color": "#a78bfa"},
+        {"name": "Shopping", "icon": "🛍️", "color": "#f472b6"},
+        {"name": "Health", "icon": "💊", "color": "#34d399"},
+        {"name": "Bills", "icon": "🧾", "color": "#fbbf24"},
+        {"name": "Education", "icon": "📚", "color": "#818cf8"},
+        {"name": "Income", "icon": "💰", "color": "#10b981"},
+    ]
+    
+    for c in default_cats:
+        cat = Category(user_id=user.id, name=c["name"], icon=c["icon"], color=c["color"])
+        db.add(cat)
+    
+    db.commit()
+
     return user
 
 

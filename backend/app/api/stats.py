@@ -49,14 +49,15 @@ def _get_year_month_or_default(year: Optional[int], month: Optional[int]) -> tup
 def summary_stats(
     year: int | None = Query(None),
     month: int | None = Query(None),
+    _t: int | None = Query(None),  # Accept timestamp for cache busting
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Caching Layer
-    cache_key = f"summary_{current_user.id}_{year}_{month}"
-    cached = get_cached(cache_key)
-    if cached:
-        return cached
+    # Caching Disabled for Real-Time Updates
+    # cache_key = f"summary_{current_user.id}_{year}_{month}"
+    # cached = get_cached(cache_key)
+    # if cached:
+    #     return cached
 
     """
     Summary for a given month (default: current month).
@@ -101,21 +102,22 @@ def summary_stats(
         .first()
     )
 
-    top_category_name = cat_row[0] if cat_row else None
-    top_category_amount = float(cat_row[1]) if cat_row else None
+    top_cat = cat_row[0] if cat_row else None
+    top_cat_amt = float(cat_row[1]) if cat_row else 0.0
 
     result = SummaryStats(
         period="month",
         year=y,
         month=m,
         total_spent=float(total_spent),
-        avg_per_day=float(avg_per_day),
+        avg_per_day=avg_per_day,
         transactions_count=tx_count,
-        top_category=top_category_name,
-        top_category_amount=top_category_amount,
+        top_category=top_cat,
+        top_category_amount=top_cat_amt,
     )
-    
-    set_cached(cache_key, result) # Cache for 60 seconds (ttl is handled by get_cached)
+
+    # Caching Disabled
+    # set_cached(cache_key, result)
     return result
 
 
@@ -210,6 +212,7 @@ def categories_stats(
 def daily_stats(
     year: int | None = Query(None),
     month: int | None = Query(None),
+    _t: int | None = Query(None),  # Accept timestamp for cache busting
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):

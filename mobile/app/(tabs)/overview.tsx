@@ -29,7 +29,7 @@ export default function OverviewScreen() {
 
             const results = await Promise.allSettled([
                 fetchSummaryStats(year, month, ts),
-                fetchExpenses(),
+                fetchExpenses(ts),
                 fetchCategories(),
                 fetchDailyStats(year, month, ts)
             ]);
@@ -59,11 +59,13 @@ export default function OverviewScreen() {
 
             // Daily Stats for Chart
             const points = daily.points || [];
+
             // Slice ending at today to avoid future zero-days
             const todayDate = new Date().getDate();
             const endIndex = Math.min(todayDate, points.length);
             const startIndex = Math.max(0, endIndex - 7);
             const slicedPoints = points.slice(startIndex, endIndex);
+
             setDailyStats(slicedPoints);
 
             try {
@@ -76,7 +78,7 @@ export default function OverviewScreen() {
                     setCatStats(breakdown);
                 }
             } catch (e) {
-                console.log("Failed to fetch breakdown", e);
+                // Failed to fetch category breakdown
             }
 
         } catch (error) {
@@ -142,8 +144,8 @@ export default function OverviewScreen() {
     ];
 
     // Use stats (Real Data Only - No Mocks)
-    const hasData = dailyStats.length > 0 && Math.max(...dailyStats.map((d: any) => d.total_amount)) > 0;
-    const displayDaily = hasData ? dailyStats : [];
+    const hasData = dailyStats.length > 0;
+    const displayDaily = dailyStats; // Always show what we have
 
     // Categories
     const hasCatData = catStats.length > 0 && catStats.reduce((acc: any, curr: any) => acc + (curr.total_amount || 0), 0) > 0;

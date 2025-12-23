@@ -79,7 +79,7 @@ export default function LoginPage() {
                     )}
                 </CardContent>
                 <CardFooter className="flex flex-col gap-2">
-                    <Button className="w-full bg-emerald-500 hover:bg-emerald-600" disabled={isSubmitting}>
+                    <Button className="w-full bg-emerald-500 hover:bg-emerald-600 mt-4 rounded-xl" disabled={isSubmitting}>
                         {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Sign in
                     </Button>

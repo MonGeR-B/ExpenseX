@@ -1,3 +1,4 @@
+import os
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
@@ -5,11 +6,12 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "ExpenseX API"
     API_V1_PREFIX: str = "/api"
 
-    DATABASE_URL: str
-    DIRECT_URL: str | None = None
-    API_KEY: str | None = None
+    # Secrets (Explicitly using os.environ.get as requested, though BaseSettings also reads env)
+    DATABASE_URL: str = os.environ.get("DATABASE_URL", "")
+    DIRECT_URL: str | None = os.environ.get("DIRECT_URL")
+    API_KEY: str | None = os.environ.get("API_KEY")
     
-    JWT_SECRET_KEY: str
+    JWT_SECRET_KEY: str = os.environ.get("JWT_SECRET_KEY", "changeme") # Fallback for dev, but should be env
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 # 1 day
 

@@ -64,7 +64,8 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
                 ...Object.fromEntries(
                     Object.entries(filters).filter(([_, v]) => v !== undefined && v !== null && v !== '')
                         .map(([k, v]) => [k, v.toString()])
-                )
+                ),
+                _t: Date.now().toString() // Force cache bust
             });
 
             const response = await api.get(`/expenses/?${params.toString()}`);
@@ -89,7 +90,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
         try {
             await api.post('/expenses/', data);
             await get().fetchExpenses(true); // Refresh
-            set({ lastUpdated: Date.now() }); // Signal stats refresh
+            set({ lastUpdated: Date.now(), isLoading: false }); // Signal stats refresh and clear loading
         } catch (error: any) {
             set({
                 error: error.response?.data?.detail || 'Failed to create expense',
@@ -104,7 +105,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
         try {
             await api.put(`/expenses/${id}`, data);
             await get().fetchExpenses(true);
-            set({ lastUpdated: Date.now() }); // Signal stats refresh
+            set({ lastUpdated: Date.now(), isLoading: false }); // Signal stats refresh and clear loading
         } catch (error: any) {
             set({
                 error: error.response?.data?.detail || 'Failed to update expense',
@@ -121,9 +122,9 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
             // Optimistic update
             set((state) => ({
                 expenses: state.expenses.filter((e) => e.id !== id),
-                isLoading: false
+                isLoading: false,
+                lastUpdated: Date.now() // Signal stats refresh
             }));
-            set({ lastUpdated: Date.now() }); // Signal stats refresh
         } catch (error: any) {
             set({
                 error: error.response?.data?.detail || 'Failed to delete expense',

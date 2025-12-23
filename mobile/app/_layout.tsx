@@ -24,7 +24,7 @@ function RootNavigator() {
         <Stack
             screenOptions={{
                 headerShown: false,
-                contentStyle: { backgroundColor: "#ffffff" },
+                contentStyle: { backgroundColor: "#000000" },
             }}
         >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

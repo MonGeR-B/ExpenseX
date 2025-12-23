@@ -36,7 +36,7 @@ const categoryColors = ["#10b981", "#3b82f6", "#8b5cf6", "#f43f5e", "#f59e0b", "
 type ViewMode = "monthly" | "daily";
 
 export function CardsAndCharts() {
-    const { lastUpdated } = useExpenseStore();
+    const lastUpdated = useExpenseStore((state) => state.lastUpdated);
     const [summary, setSummary] = useState<SummaryStats | null>(null);
     const [monthly, setMonthly] = useState<MonthlyStats | null>(null);
     const [daily, setDaily] = useState<DailyStats | null>(null);
@@ -51,11 +51,12 @@ export function CardsAndCharts() {
         (async () => {
             try {
                 setLoading(true);
+                const ts = Date.now();
                 const [s, m, c, d] = await Promise.all([
-                    getSummaryStats(),
-                    getMonthlyStats(),
-                    getCategoryStats(),
-                    getDailyStats(), // Defaults to current
+                    getSummaryStats(undefined, undefined, ts),
+                    getMonthlyStats(undefined, ts),
+                    getCategoryStats(undefined, undefined, ts),
+                    getDailyStats(undefined, undefined, ts),
                 ]);
 
                 if (!mounted) return;

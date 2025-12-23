@@ -100,8 +100,8 @@ export default function RegisterPage() {
                         </div>
                     )}
                 </CardContent>
-                <CardFooter className="flex flex-col gap-2">
-                    <Button className="w-full bg-emerald-500 hover:bg-emerald-600" disabled={isSubmitting}>
+                <CardFooter className="flex flex-col gap-2 mt-4">
+                    <Button className="w-full bg-emerald-500 hover:bg-emerald-600 rounded-xl" disabled={isSubmitting}>
                         {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Sign Up
                     </Button>

@@ -50,29 +50,34 @@ import type {
 
 export async function getSummaryStats(
     year?: number,
-    month?: number
+    month?: number,
+    timestamp?: number
 ): Promise<SummaryStats> {
     const params: any = {};
     if (year) params.year = year;
     if (month) params.month = month;
+    if (timestamp) params._t = timestamp;
     const res = await api.get<SummaryStats>("/stats/summary", { params });
     return res.data;
 }
 
-export async function getMonthlyStats(year?: number): Promise<MonthlyStats> {
+export async function getMonthlyStats(year?: number, timestamp?: number): Promise<MonthlyStats> {
     const params: any = {};
     if (year) params.year = year;
+    if (timestamp) params._t = timestamp;
     const res = await api.get<MonthlyStats>("/stats/monthly", { params });
     return res.data;
 }
 
 export async function getCategoryStats(
     year?: number,
-    month?: number
+    month?: number,
+    timestamp?: number
 ): Promise<CategoryStats> {
     const params: any = {};
     if (year) params.year = year;
     if (month) params.month = month;
+    if (timestamp) params._t = timestamp;
     const res = await api.get<CategoryStats>("/stats/categories", { params });
     return res.data;
 }
@@ -80,11 +85,13 @@ export async function getCategoryStats(
 
 export async function getDailyStats(
     year?: number,
-    month?: number
+    month?: number,
+    timestamp?: number
 ): Promise<DailyStats> {
     const params: any = {};
     if (year) params.year = year;
     if (month) params.month = month;
+    if (timestamp) params._t = timestamp;
     const res = await api.get<DailyStats>("/stats/daily", { params });
     return res.data;
 }

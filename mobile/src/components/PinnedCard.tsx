@@ -8,9 +8,10 @@ interface PinnedCardProps {
     theme?: 'blue' | 'pink' | 'emerald' | 'amber' | 'indigo' | 'violet';
     className?: string;
     showPin?: boolean;
+    style?: any;
 }
 
-export function PinnedCard({ children, theme = 'blue', className, showPin = true }: PinnedCardProps) {
+export function PinnedCard({ children, theme = 'blue', className, showPin = true, style }: PinnedCardProps) {
     const themeStyles = {
         blue: { bg: 'bg-blue-50', border: 'border-blue-200', pinFrom: 'bg-blue-400', pinTo: 'bg-blue-700' },
         pink: { bg: 'bg-pink-50', border: 'border-pink-200', pinFrom: 'bg-pink-400', pinTo: 'bg-pink-700' },
@@ -52,10 +53,10 @@ export function PinnedCard({ children, theme = 'blue', className, showPin = true
                     t.border,
                     className
                 )}
-                style={{
+                style={[{
                     backgroundColor: c.bg,
                     borderColor: c.border
-                }}
+                }, style]}
             >
                 {children}
             </View>

@@ -34,7 +34,6 @@ export default function LoginScreen() {
                 timeout
             ]);
 
-            console.log("Login Success:", res); // Debug log
             await login(res.access_token);
             router.replace("/(tabs)/overview");
         } catch (err: any) {
@@ -46,7 +45,7 @@ export default function LoginScreen() {
     };
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1 bg-black" style={{ backgroundColor: '#000000' }}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1 bg-black" style={{ backgroundColor: 'black' }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
                 <View className="items-center mb-8">
                     <View className="h-16 w-16 bg-emerald-500 rounded-2xl mb-4 shadow-lg" style={{ backgroundColor: '#10b981', width: 64, height: 64, borderRadius: 16 }} />
@@ -55,8 +54,8 @@ export default function LoginScreen() {
                 </View>
 
                 {/* Added inline style fallbacks for visibility */}
-                <PinnedCard theme="indigo" showPin={false} className="bg-slate-900 border-slate-800">
-                    <View style={{ backgroundColor: '#0f172a', borderRadius: 24, padding: 24, borderWidth: 1, borderColor: '#1e293b' }}>
+                <PinnedCard theme="indigo" showPin={false} className="bg-black border-zinc-900" style={{ backgroundColor: '#000000', borderColor: '#27272a' }}>
+                    <View style={{ backgroundColor: '#000000', borderRadius: 24, padding: 24, borderWidth: 1, borderColor: '#27272a' }}>
                         <Text className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'Outfit_700Bold', fontSize: 24, color: 'white' }}>Welcome Back</Text>
                         <Text className="text-slate-400 mb-6 text-sm" style={{ color: '#94a3b8', marginBottom: 24 }}>Sign in to your account</Text>
 
