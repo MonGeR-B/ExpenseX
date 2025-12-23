@@ -6,21 +6,18 @@
         "development": {
             "developmentClient": true,
             "distribution": "internal",
-            "env": {},
-            "workingDirectory": "mobile"
+            "env": {}
         },
         "preview": {
             "distribution": "internal",
             "env": {
                 "EXPO_PUBLIC_API_URL": "https://expensex-backend-staging.onrender.com/api"
-            },
-            "workingDirectory": "mobile"
+            }
         },
         "production": {
             "env": {
                 "EXPO_PUBLIC_API_URL": "https://expensex-backend.onrender.com/api"
-            },
-            "workingDirectory": "mobile"
+            }
         }
     },
     "submit": {
