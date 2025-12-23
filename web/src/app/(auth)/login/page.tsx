@@ -41,7 +41,10 @@ export default function LoginPage() {
 
     return (
         <Card className="w-full max-w-sm border-slate-800 bg-slate-900 text-slate-50">
-            <CardHeader>
+            <CardHeader className="text-center">
+                <div className="flex justify-center mb-4">
+                    <img src="/brand/ExpenseX_logo.png" alt="ExpenseX" className="h-16 w-16 object-contain" />
+                </div>
                 <CardTitle className="text-2xl">Login</CardTitle>
                 <CardDescription className="text-slate-400">
                     Enter your email below to login to your account.

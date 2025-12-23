@@ -23,6 +23,9 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
                 >
                     <Menu size={20} />
                 </button>
+                <div className="md:hidden h-8 w-8 relative ml-2">
+                    <img src="/brand/ExpenseX_logo.png" alt="Logo" className="h-full w-full object-contain" />
+                </div>
                 <div className="space-y-1">
                     <p className="hidden md:block text-xs uppercase tracking-widest text-slate-500 font-bold">
                         Overview

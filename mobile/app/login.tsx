@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform, ScrollView, Image as RNImage } from "react-native";
+import * as ReactNative from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useAuth } from "../src/context/AuthContext";
 import { loginApi } from "../src/lib/api";
@@ -48,7 +49,10 @@ export default function LoginScreen() {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1 bg-black" style={{ backgroundColor: 'black' }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
                 <View className="items-center mb-8">
-                    <View className="h-16 w-16 bg-emerald-500 rounded-2xl mb-4 shadow-lg" style={{ backgroundColor: '#10b981', width: 64, height: 64, borderRadius: 16 }} />
+                    <ReactNative.Image
+                        source={require('../assets/brand/ExpenseX_logo.png')}
+                        style={{ width: 80, height: 80, marginBottom: 16, resizeMode: 'contain' }}
+                    />
                     <Text className="text-4xl font-extrabold text-white text-center" style={{ fontFamily: 'Outfit_900Black', fontSize: 36, color: 'white' }}>ExpenseX</Text>
                     <Text className="text-slate-400 font-medium tracking-wide" style={{ color: '#94a3b8' }}>Financial Freedom OS</Text>
                 </View>
@@ -115,7 +119,22 @@ export default function LoginScreen() {
                         </Pressable>
                     </Link>
                 </View>
+
+
+                {/* DEBUG SECTION - REMOVE IN PRODUCTION */}
+                <View className="mt-8 p-4 bg-slate-900 rounded-xl border border-dashed border-slate-700">
+                    <Text className="text-slate-500 text-xs font-bold mb-2">🔧 DIAGNOSTICS</Text>
+                    <Text className="text-slate-400 text-xs">API URL:</Text>
+                    <Text className="text-emerald-400 text-xs font-mono mb-2">{process.env.EXPO_PUBLIC_API_URL || 'Using Fallback'}</Text>
+
+                    <Text className="text-slate-400 text-xs">Fallback (in code):</Text>
+                    <Text className="text-indigo-400 text-xs font-mono">http://192.168.1.4:8000/api</Text>
+
+                    <Text className="text-slate-600 text-[10px] mt-2 italic">
+                        If looking at "Using Fallback", ensure .env is created and server restarted with -c
+                    </Text>
+                </View>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }

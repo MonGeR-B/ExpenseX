@@ -59,7 +59,14 @@ export function RecentTable() {
                     </thead>
                     <tbody className="divide-y divide-blue-50">
                         {expenses.length === 0 && !isLoading ? (
-                            <tr><td colSpan={5} className="py-12 text-center text-slate-400 font-bold">No expenses found 🍃</td></tr>
+                            <tr>
+                                <td colSpan={5} className="py-12 text-center">
+                                    <div className="flex flex-col items-center justify-center gap-3 opacity-50">
+                                        <img src="/brand/ExpenseX_logo.png" alt="Empty" className="h-12 w-12 grayscale" />
+                                        <p className="text-slate-400 font-bold">No expenses found yet</p>
+                                    </div>
+                                </td>
+                            </tr>
                         ) : expenses.map((exp) => (
                             <tr
                                 key={exp.id}

@@ -37,8 +37,8 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
             )}>
                 <div className="flex items-center justify-between px-6 py-6 border-b border-white/5">
                     <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-black font-black shadow-lg shadow-white/10">
-                            <span className="text-xl">X</span>
+                        <div className="h-10 w-10 relative">
+                            <img src="/brand/ExpenseX_logo.png" alt="ExpenseX" className="object-contain h-full w-full" />
                         </div>
                         <div>
                             <div className="text-base font-bold text-white tracking-tight">ExpenseX</div>

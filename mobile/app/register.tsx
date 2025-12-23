@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform, ScrollView, Image as RNImage } from "react-native";
+import * as ReactNative from "react-native";
 import { Link, useRouter } from "expo-router";
 import { registerApi, loginApi } from "../src/lib/api";
 import { useAuth } from "../src/context/AuthContext";
@@ -19,9 +20,23 @@ export default function RegisterScreen() {
         }
         try {
             setSubmitting(true);
-            await registerApi(email, password);
+
+            // Timeout logic
+            const timeout = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error("Request timed out (15s). Check IP/Firewall.")), 15000);
+            });
+
+            // Race register against timeout
+            await Promise.race([
+                registerApi(email, password),
+                timeout
+            ]);
+
             // auto-login after register
-            const res = await loginApi(email, password);
+            const res: any = await Promise.race([
+                loginApi(email, password),
+                timeout
+            ]);
             await login(res.access_token);
             router.replace("/(tabs)/overview");
         } catch (err: any) {
@@ -36,7 +51,10 @@ export default function RegisterScreen() {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1 bg-black" style={{ backgroundColor: 'black' }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 20 }}>
                 <View className="items-center mb-8">
-                    <View className="h-16 w-16 bg-emerald-500 rounded-2xl mb-4 shadow-lg" style={{ backgroundColor: '#10b981', width: 64, height: 64, borderRadius: 16 }} />
+                    <ReactNative.Image
+                        source={require('../assets/brand/ExpenseX_logo.png')}
+                        style={{ width: 80, height: 80, marginBottom: 16, resizeMode: 'contain' }}
+                    />
                     <Text className="text-4xl font-extrabold text-white text-center" style={{ fontFamily: 'Outfit_900Black', fontSize: 36, color: 'white' }}>Join ExpenseX</Text>
                     <Text className="text-slate-400 font-medium tracking-wide" style={{ color: '#94a3b8' }}>Start your journey</Text>
                 </View>
