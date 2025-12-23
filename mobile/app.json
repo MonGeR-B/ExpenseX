@@ -23,7 +23,7 @@
     "android": {
       "package": "com.baibhab.expensex",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon-adaptive.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
