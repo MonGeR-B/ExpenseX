@@ -6,9 +6,7 @@
         "development": {
             "developmentClient": true,
             "distribution": "internal",
-            "env": {
-                "env": {}
-            }
+            "env": {}
         },
         "preview": {
             "distribution": "internal",
