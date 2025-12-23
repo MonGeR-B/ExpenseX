@@ -109,9 +109,9 @@ export function CardsAndCharts() {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-3 sm:space-y-6 md:space-y-8">
             {/* Top cards - "Designer's Toolkit" Pinned Style */}
-            <div className="grid gap-8 md:grid-cols-3 pt-6">
+            <div className="grid gap-3 sm:gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 pt-3 sm:pt-6">
                 {/* Card 01: Total Spent (Blue/Freepik Theme) */}
                 <div className="relative group">
                     {/* The Pin */}
@@ -119,20 +119,20 @@ export function CardsAndCharts() {
                         <div className="h-6 w-6 rounded-full bg-blue-600 shadow-[2px_4px_6px_rgba(0,0,0,0.3)] bg-gradient-to-br from-blue-400 to-blue-700 ring-1 ring-black/10"></div>
                     </div>
                     {/* The Card */}
-                    <div className="relative overflow-hidden rounded-[2.5rem] bg-blue-50 border-2 border-blue-200 p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
-                        <div className="flex justify-between items-start mb-4">
-                            <span className="text-4xl font-black text-blue-900/20 font-sans">01</span>
-                            <div className="h-12 w-12 rounded-2xl bg-blue-500 text-white flex items-center justify-center text-xl shadow-lg shadow-blue-500/20">
+                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] md:rounded-[2.5rem] bg-blue-50 border-2 border-blue-200 p-3 sm:p-5 md:p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
+                        <div className="flex justify-between items-start mb-2 sm:mb-4">
+                            <span className="text-2xl sm:text-3xl md:text-4xl font-black text-blue-900/20 font-sans">01</span>
+                            <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-xl sm:rounded-2xl bg-blue-500 text-white flex items-center justify-center text-base sm:text-lg md:text-xl shadow-lg shadow-blue-500/20">
                                 💰
                             </div>
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-800 mb-1">Total Spent</h3>
-                            <div className="text-4xl font-black text-slate-900 tracking-tight my-2">
+                            <h3 className="text-base sm:text-lg md:text-xl font-black text-slate-800 mb-0.5 sm:mb-1">Total Spent</h3>
+                            <div className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight my-1 sm:my-2">
                                 ₹{(summary?.total_spent ?? 0).toLocaleString()}
                             </div>
-                            <p className="text-sm font-semibold text-slate-500 leading-relaxed">
-                                You've spent <span className="text-blue-600 font-bold">+12%</span> more than last month. Keep an eye on it!
+                            <p className="text-xs sm:text-sm font-semibold text-slate-500 leading-snug sm:leading-relaxed">
+                                Total amount spent this month
                             </p>
                         </div>
                     </div>
@@ -143,20 +143,20 @@ export function CardsAndCharts() {
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
                         <div className="h-6 w-6 rounded-full bg-pink-600 shadow-[2px_4px_6px_rgba(0,0,0,0.3)] bg-gradient-to-br from-pink-400 to-pink-700 ring-1 ring-black/10"></div>
                     </div>
-                    <div className="relative overflow-hidden rounded-[2.5rem] bg-pink-50 border-2 border-pink-200 p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
-                        <div className="flex justify-between items-start mb-4">
-                            <span className="text-4xl font-black text-pink-900/20 font-sans">02</span>
-                            <div className="h-12 w-12 rounded-2xl bg-pink-500 text-white flex items-center justify-center text-xl shadow-lg shadow-pink-500/20">
+                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] md:rounded-[2.5rem] bg-pink-50 border-2 border-pink-200 p-3 sm:p-5 md:p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
+                        <div className="flex justify-between items-start mb-2 sm:mb-4">
+                            <span className="text-2xl sm:text-3xl md:text-4xl font-black text-pink-900/20 font-sans">02</span>
+                            <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-xl sm:rounded-2xl bg-pink-500 text-white flex items-center justify-center text-base sm:text-lg md:text-xl shadow-lg shadow-pink-500/20">
                                 🧾
                             </div>
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-800 mb-1">Transactions</h3>
-                            <div className="text-4xl font-black text-slate-900 tracking-tight my-2">
+                            <h3 className="text-base sm:text-lg md:text-xl font-black text-slate-800 mb-0.5 sm:mb-1">Transactions</h3>
+                            <div className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight my-1 sm:my-2">
                                 {summary?.transactions_count ?? 0}
                             </div>
                             <p className="text-sm font-semibold text-slate-500 leading-relaxed">
-                                Total active transactions processed this month across all categories.
+                                Total active transactions processed this month
                             </p>
                         </div>
                     </div>
@@ -167,16 +167,16 @@ export function CardsAndCharts() {
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
                         <div className="h-6 w-6 rounded-full bg-emerald-600 shadow-[2px_4px_6px_rgba(0,0,0,0.3)] bg-gradient-to-br from-emerald-400 to-emerald-700 ring-1 ring-black/10"></div>
                     </div>
-                    <div className="relative overflow-hidden rounded-[2.5rem] bg-emerald-50 border-2 border-emerald-200 p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
-                        <div className="flex justify-between items-start mb-4">
-                            <span className="text-4xl font-black text-emerald-900/20 font-sans">03</span>
-                            <div className="h-12 w-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-xl shadow-lg shadow-emerald-500/20">
+                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] md:rounded-[2.5rem] bg-emerald-50 border-2 border-emerald-200 p-3 sm:p-5 md:p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
+                        <div className="flex justify-between items-start mb-2 sm:mb-4">
+                            <span className="text-2xl sm:text-3xl md:text-4xl font-black text-emerald-900/20 font-sans">03</span>
+                            <div className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-xl sm:rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-base sm:text-lg md:text-xl shadow-lg shadow-emerald-500/20">
                                 🏆
                             </div>
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-800 mb-1">Top Category</h3>
-                            <div className="text-3xl font-black text-slate-900 tracking-tight my-2 truncate">
+                            <h3 className="text-base sm:text-lg md:text-xl font-black text-slate-800 mb-0.5 sm:mb-1">Top Category</h3>
+                            <div className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight my-1 sm:my-2 truncate">
                                 {summary?.top_category ?? "—"}
                             </div>
                             <p className="text-sm font-semibold text-slate-500 leading-relaxed">
@@ -188,13 +188,13 @@ export function CardsAndCharts() {
             </div>
 
             {/* Charts row */}
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-3 sm:gap-6 lg:grid-cols-3">
                 {/* Spending chart - White Card */}
-                <div className="md:col-span-2 rounded-[2rem] bg-white border border-slate-100 p-8 shadow-sm">
-                    <div className="mb-8 flex justify-between items-center">
+                <div className="lg:col-span-2 rounded-xl sm:rounded-[1.5rem] md:rounded-[2rem] bg-white border border-slate-100 p-3 sm:p-4 md:p-6 lg:p-8 shadow-sm">
+                    <div className="mb-4 sm:mb-6 md:mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900">Analytics</h2>
-                            <p className="text-sm text-slate-400 font-medium">Spending trends</p>
+                            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900">Analytics</h2>
+                            <p className="text-xs sm:text-sm text-slate-400 font-medium">Spending trends</p>
                         </div>
                         <div className="flex gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100">
                             <Button
@@ -215,7 +215,7 @@ export function CardsAndCharts() {
                             </Button>
                         </div>
                     </div>
-                    <div className="h-80">
+                    <div className="h-56 sm:h-64 md:h-80">
                         {(view === "monthly" ? monthlyChartData : dailyChartData).length === 0 ? (
                             <div className="h-full flex items-center justify-center text-sm font-medium text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                                 Not enough data yet 📉
@@ -273,10 +273,11 @@ export function CardsAndCharts() {
                 </div>
 
                 {/* Category breakdown - White Card */}
-                <div className="rounded-[2rem] bg-white border border-slate-100 p-8 shadow-sm flex flex-col">
-                    <div className="mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900">Distribution</h2>
-                        <p className="text-sm text-slate-400 font-medium">Where it goes</p>
+                {/* Pie Chart - Soft Blue Island */}
+                <div className="rounded-xl sm:rounded-[1.5rem] md:rounded-[2rem] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border border-slate-100 p-3 sm:p-4 md:p-6 lg:p-8 shadow-sm flex flex-col">
+                    <div className="mb-3 sm:mb-4 md:mb-6">
+                        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900">Distribution</h2>
+                        <p className="text-xs sm:text-sm text-slate-400 font-medium">Where it goes</p>
                     </div>
                     <div className="flex-1 relative min-h-[220px]">
                         {categoryChartData.length === 0 ? (

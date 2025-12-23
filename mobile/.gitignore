@@ -32,6 +32,8 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
+!.env.example
 
 # typescript
 *.tsbuildinfo
@@ -40,4 +42,24 @@ yarn-error.*
 /ios
 /android
 
+# Custom test/debug files
 test_api_debug.js
+
+# Database files (if SQLite used locally)
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets and credentials
+*.pem
+*.key
+*.p12
+*.p8
+*.jks
+google-services.json
+GoogleService-Info.plist
+
+# EAS credentials
+credentials.json
+
+BUILD_GUIDE.md

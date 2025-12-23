@@ -38,16 +38,16 @@ export function RecentTable() {
     };
 
     return (
-        <div className="rounded-[2rem] bg-[#eff6ff] p-8 shadow-sm transition-all hover:shadow-md">
-            <div className="flex items-center justify-between mb-8">
+        <div className="rounded-xl sm:rounded-[1.5rem] md:rounded-[2rem] bg-[#eff6ff] p-3 sm:p-4 md:p-6 lg:p-8 shadow-sm transition-all hover:shadow-md">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900">Recent Transactions</h2>
-                    <p className="text-sm font-bold text-blue-900/60 uppercase tracking-wide mt-1">History</p>
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900">Recent Transactions</h2>
+                    <p className="text-xs sm:text-sm font-bold text-blue-900/60 uppercase tracking-wide mt-0.5 sm:mt-1">History</p>
                 </div>
             </div>
 
-            <div className="overflow-hidden rounded-2xl bg-white border border-blue-100 shadow-sm">
-                <table className="w-full text-sm">
+            <div className="overflow-x-auto rounded-2xl bg-white border border-blue-100 shadow-sm">
+                <table className="w-full text-sm min-w-[640px]">
                     <thead>
                         <tr className="border-b border-blue-50 bg-blue-50/50">
                             <th className="py-4 px-6 text-left font-bold text-xs uppercase tracking-wider text-blue-900/60">Date</th>

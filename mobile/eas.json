@@ -1,0 +1,28 @@
+{
+    "cli": {
+        "version": ">= 13.2.2"
+    },
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal",
+            "env": {
+                "EXPO_PUBLIC_API_URL": "http://192.168.1.8:8000/api"
+            }
+        },
+        "preview": {
+            "distribution": "internal",
+            "env": {
+                "EXPO_PUBLIC_API_URL": "https://expensex-backend-staging.onrender.com/api"
+            }
+        },
+        "production": {
+            "env": {
+                "EXPO_PUBLIC_API_URL": "https://expensex-backend.onrender.com/api"
+            }
+        }
+    },
+    "submit": {
+        "production": {}
+    }
+}

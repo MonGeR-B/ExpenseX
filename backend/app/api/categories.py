@@ -66,6 +66,8 @@ def delete_category(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    from app.models.expense import Expense
+    
     category = (
         db.query(Category)
         .filter(Category.id == category_id, Category.user_id == current_user.id)
@@ -74,9 +76,26 @@ def delete_category(
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
     
+    # Count linked expenses
+    expense_count = (
+        db.query(Expense)
+        .filter(Expense.category_id == category_id, Expense.user_id == current_user.id)
+        .count()
+    )
+    
+    # Warning: inform user about expense reassignment
+    # Since we have ondelete="SET NULL", expenses will be automatically uncategorized
+    if expense_count > 0:
+        # You can choose to block deletion or just warn
+        # For now, we'll allow deletion but the client should show a confirmation
+        pass  # Deletion proceeds, expenses will have category_id set to NULL
+    
     db.delete(category)
     db.commit()
-    return {"message": "Category deleted"}
+    return {
+        "message": "Category deleted",
+        "affected_expenses": expense_count
+    }
 
 @router.post("/seed", response_model=List[CategoryOut])
 def seed_default_categories(

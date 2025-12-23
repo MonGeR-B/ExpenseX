@@ -9,7 +9,7 @@ class Expense(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
-    category_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("categories.id"))
+    category_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("categories.id", ondelete="SET NULL"))
     date: Mapped[date] = mapped_column(Date, nullable=False)
     amount: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
     description: Mapped[str | None] = mapped_column(String(500))

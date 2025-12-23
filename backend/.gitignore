@@ -58,5 +58,25 @@ mobile/web-build/
 *.swp
 *.swo
 
+# Custom scripts (may contain test data)
 ensure_user.py
 mobile_verify.py
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+
+# Secrets and credentials
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+credentials/
+
+# Deployment-specific (may contain production configs)
+.env.production
+.env.staging
+alembic.ini  # May contain DB URLs

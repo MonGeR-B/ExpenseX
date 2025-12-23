@@ -85,7 +85,18 @@ export default function AddExpenseScreen() {
     const handleSubmit = async () => {
         const amt = parseFloat(amount);
         if (isNaN(amt) || amt <= 0) {
-            Alert.alert("Invalid Amount", "Please enter a valid expense amount.");
+            Alert.alert("Invalid Amount", "Please enter a valid positive amount.");
+            return;
+        }
+
+        // Maximum amount validation (999,999,999)
+        if (amt > 999999999) {
+            Alert.alert("Amount Too Large", "Amount cannot exceed ₹999,999,999 (1 billion)");
+            return;
+        }
+
+        if (!selectedCategory) {
+            Alert.alert("Category Required", "Please select a category.");
             return;
         }
 

@@ -133,6 +133,9 @@ export default function TransactionsScreen() {
                 {/* Header */}
                 <View className="px-6 py-6" style={{ paddingHorizontal: 24, paddingVertical: 24 }}>
                     <Text className="text-white text-3xl font-bold" style={{ color: 'white', fontSize: 30, fontFamily: 'Outfit_700Bold' }}>Transactions</Text>
+                    <Text className="text-slate-400 text-sm mt-2" style={{ color: '#94a3b8', fontSize: 13, marginTop: 8 }}>
+                        💡 To edit transactions, visit the website
+                    </Text>
                 </View>
 
                 {/* Filters (Mock) */}

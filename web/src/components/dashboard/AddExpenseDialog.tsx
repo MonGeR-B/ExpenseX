@@ -50,6 +50,12 @@ export function AddExpenseDialog({ children }: { children?: React.ReactNode }) {
             return;
         }
 
+        // Maximum amount validation (999,999,999)
+        if (numAmount > 999999999) {
+            alert("Amount cannot exceed ₹999,999,999 (1 billion)");
+            return;
+        }
+
         try {
             await addExpense({
                 amount: numAmount,
