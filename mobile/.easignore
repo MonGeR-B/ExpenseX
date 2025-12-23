@@ -14,6 +14,8 @@ node_modules
 *.log
 
 # DO NOT IGNORE ASSETS
+!*.png
+!assets/
 
 .env.local
 .DS_Store
