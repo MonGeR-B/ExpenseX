@@ -15,7 +15,10 @@
     },
     "ios": {
       "bundleIdentifier": "com.baibhab.expensex",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.baibhab.expensex",
@@ -34,6 +37,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9f92b4fb-ac8d-4dce-86d6-2999f213c081"
+      }
     }
   }
 }
