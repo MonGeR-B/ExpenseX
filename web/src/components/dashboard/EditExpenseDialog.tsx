@@ -91,9 +91,9 @@ export function EditExpenseDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px] bg-slate-950/90 backdrop-blur-xl border-slate-800 text-slate-50 shadow-2xl shadow-emerald-500/10">
+            <DialogContent className="sm:max-w-[425px] bg-white border-slate-100 text-slate-900 shadow-2xl rounded-[2rem] p-6 lg:p-8">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-light tracking-wide bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                    <DialogTitle className="text-2xl font-black text-slate-900">
                         Edit Transaction
                     </DialogTitle>
                 </DialogHeader>
@@ -101,15 +101,15 @@ export function EditExpenseDialog({
 
                     {/* Amount Input - Prominent */}
                     <div className="relative group">
-                        <Label className="text-xs text-slate-400 uppercase tracking-wider mb-1.5 block">Amount</Label>
+                        <Label className="text-xs text-slate-400 uppercase tracking-wider mb-1.5 block font-bold">Amount</Label>
                         <div className="relative">
-                            <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-500 pointer-events-none" />
+                            <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500 pointer-events-none" />
                             <Input
                                 type="number"
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 required
-                                className="pl-9 h-12 bg-slate-900/50 border-slate-800 focus:border-emerald-500/50 focus:ring-emerald-500/20 text-lg font-medium text-emerald-400 placeholder:text-slate-700 transition-all"
+                                className="pl-10 h-14 bg-slate-50 border-slate-200 focus:border-slate-900 focus:ring-slate-900/10 text-2xl font-bold text-slate-900 placeholder:text-slate-300 transition-all rounded-2xl"
                                 placeholder="0.00"
                             />
                         </div>
@@ -117,15 +117,15 @@ export function EditExpenseDialog({
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label className="text-xs text-slate-400 uppercase tracking-wider">Category</Label>
+                            <Label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Category</Label>
                             <Select value={categoryId} onValueChange={setCategoryId}>
-                                <SelectTrigger className="h-10 bg-slate-900/50 border-slate-800 focus:ring-slate-700 text-slate-200">
+                                <SelectTrigger className="h-11 bg-slate-50 border-slate-200 focus:ring-slate-900 text-slate-900 rounded-xl font-medium">
                                     <SelectValue placeholder="Select" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-slate-800 text-slate-200 max-h-[200px]">
-                                    <SelectItem value="none">Uncategorized</SelectItem>
+                                <SelectContent className="bg-white border-slate-100 text-slate-700 shadow-xl rounded-xl max-h-[300px]">
+                                    <SelectItem value="none" className="font-medium focus:bg-slate-50">Uncategorized</SelectItem>
                                     {categories.map((cat) => (
-                                        <SelectItem key={cat.id} value={cat.id.toString()}>
+                                        <SelectItem key={cat.id} value={cat.id.toString()} className="font-medium focus:bg-slate-50">
                                             <span className="flex items-center gap-2">
                                                 <span>{cat.icon}</span>
                                                 <span>{cat.name}</span>
@@ -136,26 +136,26 @@ export function EditExpenseDialog({
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-xs text-slate-400 uppercase tracking-wider">Date</Label>
+                            <Label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Date</Label>
                             <div className="relative">
-                                <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-3.5 text-slate-500 pointer-events-none" />
+                                <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                                 <Input
                                     type="date"
                                     value={date}
                                     onChange={(e) => setDate(e.target.value)}
                                     required
-                                    className="pl-9 h-10 bg-slate-900/50 border-slate-800 focus:border-slate-700 text-slate-300 text-sm"
+                                    className="pl-10 h-11 bg-slate-50 border-slate-200 focus:ring-slate-900 text-slate-900 text-sm font-medium rounded-xl"
                                 />
                             </div>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label className="text-xs text-slate-400 uppercase tracking-wider">Description</Label>
+                        <Label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Description</Label>
                         <Input
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="bg-slate-900/50 border-slate-800 focus:border-slate-700 text-slate-200 placeholder:text-slate-700"
+                            className="bg-slate-50 border-slate-200 focus:ring-slate-900 text-slate-900 placeholder:text-slate-400 rounded-xl h-11 font-medium"
                             placeholder="What was this for?"
                         />
                     </div>
@@ -163,11 +163,11 @@ export function EditExpenseDialog({
                     <DialogFooter className="pt-2">
                         <Button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            className="w-full rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold h-12 shadow-lg hover:scale-[1.01] active:scale-[0.98] transition-all"
                             disabled={isLoading}
                         >
                             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Save Changes
+                            Update Transaction
                         </Button>
                     </DialogFooter>
                 </form>

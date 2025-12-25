@@ -115,7 +115,7 @@ export function AddExpenseDialog({ children }: { children?: React.ReactNode }) {
                                 <SelectTrigger className="h-11 bg-slate-50 border-slate-200 focus:ring-slate-900 text-slate-900 rounded-xl font-medium">
                                     <SelectValue placeholder="Select" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white border-slate-100 text-slate-700 shadow-xl rounded-xl">
+                                <SelectContent className="bg-white border-slate-100 text-slate-700 shadow-xl rounded-xl max-h-[300px]">
                                     <SelectItem value="none" className="font-medium focus:bg-slate-50">Uncategorized</SelectItem>
                                     {categories.map((cat) => (
                                         <SelectItem key={cat.id} value={cat.id.toString()} className="font-medium focus:bg-slate-50">
