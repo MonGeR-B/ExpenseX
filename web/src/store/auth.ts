@@ -4,6 +4,7 @@ import api from '@/lib/api';
 interface User {
     id: number;
     email: string;
+    username?: string;
     // Add other user fields as needed based on backend response
 }
 
@@ -15,9 +16,10 @@ interface AuthState {
     error: string | null;
 
     login: (email: string, password: string) => Promise<void>;
-    register: (email: string, password: string) => Promise<void>;
+    register: (email: string, password: string, username?: string) => Promise<void>;
     logout: () => void;
     fetchUser: () => Promise<void>;
+    updateProfile: (username: string) => Promise<void>;
     initialize: () => Promise<void>; // To restore session on load
 }
 
@@ -45,24 +47,32 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({ token: access_token, isAuthenticated: true });
             await get().fetchUser(); // Fetch user details after login
         } catch (error: any) {
+            const detail = error.response?.data?.detail;
+            const errorMessage = typeof detail === 'string' ? detail :
+                (Array.isArray(detail) ? detail.map((d: any) => d.msg).join(', ') : JSON.stringify(detail || 'Login failed'));
+
             set({
-                error: error.response?.data?.detail || 'Login failed',
+                error: errorMessage,
                 isLoading: false
             });
             throw error;
         }
     },
 
-    register: async (email, password) => {
+    register: async (email, password, username) => {
         set({ isLoading: true, error: null });
         try {
-            await api.post('/auth/register', { email, password });
+            await api.post('/auth/register', { email, password, username });
             // Automatically login after register? Or redirect to login?
             // For now, let's just complete successfully
             set({ isLoading: false });
         } catch (error: any) {
+            const detail = error.response?.data?.detail;
+            const errorMessage = typeof detail === 'string' ? detail :
+                (Array.isArray(detail) ? detail.map((d: any) => d.msg).join(', ') : JSON.stringify(detail || 'Registration failed'));
+
             set({
-                error: error.response?.data?.detail || 'Registration failed',
+                error: errorMessage,
                 isLoading: false
             });
             throw error;
@@ -83,6 +93,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             // If fetch user fails (e.g. invalid token), logout
             get().logout();
             set({ isLoading: false });
+        }
+    },
+
+    updateProfile: async (username: string) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await api.put('/auth/profile', { username });
+            set({ user: response.data, isLoading: false });
+        } catch (error: any) {
+            const detail = error.response?.data?.detail;
+            const errorMessage = typeof detail === 'string' ? detail :
+                (Array.isArray(detail) ? detail.map((d: any) => d.msg).join(', ') : JSON.stringify(detail || 'Profile update failed'));
+
+            set({
+                error: errorMessage,
+                isLoading: false
+            });
+            throw error;
         }
     },
 

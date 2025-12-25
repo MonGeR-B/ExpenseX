@@ -31,7 +31,7 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
                         Overview
                     </p>
                     <h1 className="text-xl md:text-2xl font-black tracking-tight text-white">
-                        Hello, {user?.email?.split('@')[0] || 'User'} 👋
+                        Hello, {user?.username || user?.email?.split('@')[0] || 'User'} 👋
                     </h1>
                 </div>
             </div>
@@ -52,7 +52,7 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
                     <div className="flex items-center gap-3 group cursor-pointer">
                         <div className="h-10 w-10 rounded-xl bg-[#222] border border-white/10 p-[2px] shadow-sm flex items-center justify-center">
                             <span className="text-xs font-black uppercase text-white">
-                                {user?.email?.[0] || 'U'}
+                                {user?.username?.[0] || user?.email?.[0] || 'U'}
                             </span>
                         </div>
                     </div>

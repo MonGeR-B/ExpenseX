@@ -6,12 +6,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import api from "@/lib/api"
-import { Download, Upload, Loader2, AlertTriangle } from "lucide-react"
+import { Download, Upload, Loader2, AlertTriangle, User as UserIcon } from "lucide-react"
 import { toast } from "sonner"
+import { useAuthStore } from "@/store/auth"
 
 export default function SettingsPage() {
+    const { user, updateProfile } = useAuthStore()
     const [importing, setImporting] = useState(false)
     const [file, setFile] = useState<File | null>(null)
+    const [newUsername, setNewUsername] = useState("")
+    const [updatingProfile, setUpdatingProfile] = useState(false)
+
+    const handleUpdateProfile = async () => {
+        if (!newUsername.trim()) return
+        setUpdatingProfile(true)
+        try {
+            await updateProfile(newUsername)
+            toast.success("Profile updated successfully!")
+            setNewUsername("")
+        } catch (error: any) {
+            toast.error("Failed to update profile")
+        } finally {
+            setUpdatingProfile(false)
+        }
+    }
 
     const handleExport = async () => {
         try {
@@ -62,6 +80,48 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-2 pt-6">
+                    {/* Profile Settings - Purple Theme */}
+                    <div className="relative group md:col-span-2">
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
+                            <div className="h-6 w-6 rounded-full border border-black/10 bg-purple-500 shadow-md"></div>
+                        </div>
+                        <div className="relative overflow-hidden rounded-[2.5rem] bg-purple-50 border-2 border-purple-200 p-8 shadow-sm">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="h-12 w-12 rounded-2xl bg-purple-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/20">
+                                    <UserIcon className="h-6 w-6" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-black text-purple-900">Profile Settings</h3>
+                                    <p className="text-xs font-bold text-purple-700/60 uppercase tracking-wider">Public Profile</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4 max-w-md">
+                                <div className="space-y-2">
+                                    <Label htmlFor="username" className="text-xs font-black text-purple-900 uppercase">Display Name</Label>
+                                    <div className="flex gap-3">
+                                        <Input
+                                            id="username"
+                                            placeholder="Enter your display name"
+                                            defaultValue={user?.username || ''}
+                                            onChange={(e) => setNewUsername(e.target.value)}
+                                            className="bg-white border-purple-200 text-purple-900 focus:ring-purple-500 rounded-xl h-11"
+                                        />
+                                        <Button
+                                            onClick={handleUpdateProfile}
+                                            disabled={updatingProfile}
+                                            className="bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl h-11 px-6 shadow-md whitespace-nowrap"
+                                        >
+                                            {updatingProfile ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+                                        </Button>
+                                    </div>
+                                    <p className="text-xs text-purple-700/60 font-medium">
+                                        This is how you will be addressed in the app.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {/* Export Card - Blue Theme */}
                     <div className="relative group">
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">

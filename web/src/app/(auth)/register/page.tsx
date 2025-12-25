@@ -20,6 +20,7 @@ import { toast } from "sonner"
 
 export default function RegisterPage() {
     const [email, setEmail] = useState("")
+    const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -40,7 +41,7 @@ export default function RegisterPage() {
 
         setIsSubmitting(true)
         try {
-            await register(email, password)
+            await register(email, password, username)
             toast.success("Signup Successful! Redirecting...")
             router.push("/dashboard")
         } catch (err) {
@@ -75,6 +76,18 @@ export default function RegisterPage() {
                             className="bg-slate-950 border-slate-800"
                         />
                     </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="username">Username (Optional)</Label>
+                        <Input
+                            id="username"
+                            type="text"
+                            placeholder="Maverick"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="bg-slate-950 border-slate-800"
+                        />
+                    </div>
+
                     <div className="grid gap-2">
                         <Label htmlFor="password">Password</Label>
                         <Input

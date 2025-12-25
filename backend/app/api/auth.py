@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import hash_password, verify_password, create_access_token
 from app.models.user import User
-from app.schemas.auth import UserCreate, UserRead, Token
+from app.schemas.auth import UserCreate, UserRead, Token, UserUpdate
 from app.api.deps import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -22,6 +22,7 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
 
     user = User(
         email=user_in.email,
+        username=user_in.username,
         password_hash=hash_password(user_in.password),
     )
     db.add(user)
@@ -65,4 +66,13 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 @router.get("/me", response_model=UserRead)
 def read_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+
+@router.put("/profile", response_model=UserRead)
+def update_profile(user_update: UserUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if user_update.username is not None:
+        current_user.username = user_update.username
+        db.commit()
+        db.refresh(current_user)
     return current_user
