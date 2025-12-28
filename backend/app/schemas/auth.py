@@ -19,6 +19,14 @@ class UserRead(BaseModel):
 class UserUpdate(BaseModel):
     username: str | None = None
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    email: EmailStr
+    new_password: str
+
 
 class Token(BaseModel):
     access_token: str

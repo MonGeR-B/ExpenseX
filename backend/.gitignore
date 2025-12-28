@@ -80,3 +80,4 @@ credentials/
 .env.production
 .env.staging
 alembic.ini  # May contain DB URLs
+check_smtp.py

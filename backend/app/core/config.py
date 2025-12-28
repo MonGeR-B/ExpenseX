@@ -15,11 +15,25 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 # 1 day
 
+    # Email
+    MAIL_USERNAME: str = os.environ.get("EMAIL_USER") or os.environ.get("MAIL_USERNAME") or "baibhabghosh2003@gmail.com"
+    MAIL_PASSWORD: str = os.environ.get("EMAIL_PASS") or os.environ.get("MAIL_PASSWORD") or "aucx tmla yizu ubhm"
+    MAIL_FROM: str = os.environ.get("MAIL_FROM", "baibhabghosh2003@gmail.com")
+    MAIL_PORT: int = int(os.environ.get("MAIL_PORT", 587))
+    MAIL_SERVER: str = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
+    MAIL_STARTTLS: bool = True
+    MAIL_SSL_TLS: bool = False
+    USE_CREDENTIALS: bool = True
+    VALIDATE_CERTS: bool = True
+
     class Config:
         case_sensitive = True
         env_file = ".env"
+        extra = "ignore"
         env_file_encoding = "utf-8"
 
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
+
+settings = get_settings()

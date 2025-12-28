@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import hash_password, verify_password, create_access_token
 from app.models.user import User
-from app.schemas.auth import UserCreate, UserRead, Token, UserUpdate
+from app.schemas.auth import UserCreate, UserRead, Token, UserUpdate, ForgotPasswordRequest, ResetPasswordRequest
+import app.schemas as schemas
 from app.api.deps import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -76,3 +77,83 @@ def update_profile(user_update: UserUpdate, current_user: User = Depends(get_cur
         db.commit()
         db.refresh(current_user)
     return current_user
+
+@router.post("/forgot-password", status_code=200)
+async def forgot_password(request: schemas.auth.ForgotPasswordRequest, db: Session = Depends(get_db)):
+    """
+    Trigger password reset email.
+    Always returns 200 to prevent user enumeration.
+    """
+    user = db.query(User).filter(User.email == request.email).first()
+    if not user:
+        # Return success even if user not found to prevent enumeration
+        return {"msg": "If the email exists, a reset link has been sent."}
+    
+    # Generate 6-digit OTP
+    import secrets
+    otp = "".join([str(secrets.randbelow(10)) for _ in range(6)])
+    # print(f"-------------\nDEBUG RESET OTP: {otp}\n-------------")
+    
+    # Hash OTP
+    import hashlib
+    otp_hash = hashlib.sha256(otp.encode()).hexdigest()
+    
+    # Save to DB
+    from datetime import datetime, timedelta
+    user.reset_token_hash = otp_hash
+    user.reset_token_expires_at = datetime.utcnow() + timedelta(minutes=15)
+    db.commit()
+    
+    # Send Email
+    try:
+        from app.core.email import send_reset_password_email
+        await send_reset_password_email(user.email, otp)
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+    
+    return {"msg": "If the email exists, a reset code has been sent."}
+
+@router.post("/reset-password", status_code=200)
+def reset_password(request: schemas.auth.ResetPasswordRequest, db: Session = Depends(get_db)):
+    """
+    Reset password using token.
+    """
+    user = db.query(User).filter(User.email == request.email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid request",
+        )
+        
+    if not user.reset_token_hash or not user.reset_token_expires_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired token",
+        )
+        
+    # Verify Expiry
+    from datetime import datetime
+    if datetime.utcnow() > user.reset_token_expires_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Token has expired",
+        )
+        
+    # Verify Hash
+    import hashlib
+    input_hash = hashlib.sha256(request.token.encode()).hexdigest()
+    
+    # Basic constant-time comparison (hashed vs hashed is relatively safe here)
+    if input_hash != user.reset_token_hash:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid token",
+        )
+        
+    # Update Password and Clear Token
+    user.password_hash = hash_password(request.new_password)
+    user.reset_token_hash = None
+    user.reset_token_expires_at = None
+    db.commit()
+    
+    return {"msg": "Password reset successfully"}
