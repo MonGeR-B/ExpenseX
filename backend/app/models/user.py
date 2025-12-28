@@ -25,3 +25,4 @@ class User(Base):
 from app.models.category import Category  # noqa: E402
 from app.models.expense import Expense   # noqa: E402
 from app.models.budget import Budget     # noqa: E402
+from app.models.token import RefreshToken # noqa: E402

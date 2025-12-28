@@ -26,14 +26,36 @@ api.interceptors.request.use(
 );
 
 // Response Interceptor: Handle 401s
+// Response Interceptor: Handle 401s and Silent Refresh
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
-        if (error.response && error.response.status === 401) {
-            // Clear token and redirect to login if unauthorized
-            if (typeof window !== 'undefined') {
-                localStorage.removeItem('token');
-                window.location.href = '/login';
+    async (error) => {
+        const originalRequest = error.config;
+
+        // Prevent infinite loop if refresh endpoint itself fails
+        if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/refresh')) {
+            originalRequest._retry = true;
+            try {
+                // Attempt to refresh token
+                // Use the base URL of the instance
+                const baseURL = api.defaults.baseURL || 'http://localhost:8000/api';
+                const res = await axios.post(`${baseURL}/auth/refresh`, {}, { withCredentials: true });
+
+                // If successful (new access token received)
+                if (res.status === 200) {
+                    const { access_token } = res.data;
+                    localStorage.setItem('token', access_token);
+
+                    // Retry original request with new token
+                    originalRequest.headers.Authorization = `Bearer ${access_token}`;
+                    return api(originalRequest);
+                }
+            } catch (refreshError) {
+                // Refresh failed (token invalid or theft detected) -> Logout
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                }
             }
         }
         return Promise.reject(error);

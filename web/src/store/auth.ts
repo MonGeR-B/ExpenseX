@@ -15,7 +15,7 @@ interface AuthState {
     isLoading: boolean;
     error: string | null;
 
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
     register: (email: string, password: string, username?: string) => Promise<void>;
     logout: () => void;
     fetchUser: () => Promise<void>;
@@ -30,14 +30,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     isLoading: false,
     error: null,
 
-    login: async (email, password) => {
+    login: async (email, password, rememberMe = false) => {
         set({ isLoading: true, error: null });
         try {
             const formData = new FormData();
             formData.append('username', email); // OAuth2 expects 'username'
             formData.append('password', password);
 
-            const response = await api.post('/auth/login', formData, {
+            // Append remember_me as query param
+            const response = await api.post(`/auth/login?remember_me=${rememberMe}`, formData, {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             });
 

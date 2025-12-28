@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/store/auth"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
     Card,
     CardContent,
@@ -21,6 +22,7 @@ import { toast } from "sonner"
 export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [rememberMe, setRememberMe] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter()
     const { login, error } = useAuthStore()
@@ -29,7 +31,7 @@ export default function LoginPage() {
         e.preventDefault()
         setIsSubmitting(true)
         try {
-            await login(email, password)
+            await login(email, password, rememberMe)
             toast.success("Login Successful! Welcome back.")
             router.push("/dashboard")
         } catch (err) {
@@ -82,6 +84,19 @@ export default function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             className="bg-slate-950 border-slate-800"
                         />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox
+                            id="remember"
+                            checked={rememberMe}
+                            onCheckedChange={(checked: boolean) => setRememberMe(checked)}
+                        />
+                        <label
+                            htmlFor="remember"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-slate-400"
+                        >
+                            Remember me
+                        </label>
                     </div>
                     {error && (
                         <div className="text-red-500 text-sm">

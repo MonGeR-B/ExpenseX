@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from datetime import datetime
 
 from app.core.database import get_db
 from app.core.security import hash_password, verify_password, create_access_token
@@ -53,7 +54,16 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(
+    response: Response,
+    form_data: OAuth2PasswordRequestForm = Depends(), 
+    remember_me: bool = False,
+    db: Session = Depends(get_db)
+):
+    from app.core.security import create_refresh_token
+    from datetime import timedelta
+    from app.models.token import RefreshToken
+
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
@@ -61,8 +71,126 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
             detail="Incorrect email or password",
         )
 
+    # 1. Access Token (Short Lived)
     access_token = create_access_token(user.id)
+    
+    # 2. Refresh Token (Long Lived)
+    refresh_expires = timedelta(days=30)
+    refresh_token, jti = create_refresh_token(user.id, expires_delta=refresh_expires)
+    
+    # 3. Store JTI in DB (Whitelist)
+    db_token = RefreshToken(
+        user_id=user.id,
+        token_jti=jti,
+        expires_at=datetime.utcnow() + refresh_expires
+    )
+    db.add(db_token)
+    db.commit()
+    
+    # 4. Set HttpOnly Cookie
+    # If remember_me is False, max_age=None makes it a Session Cookie (deleted on close)
+    # If True, max_age set to 30 days
+    max_age_val = 30 * 24 * 60 * 60 if remember_me else None
+    
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=False, # Set to True in Production (HTTPS)
+        samesite="lax",
+        max_age=max_age_val
+    )
+
     return Token(access_token=access_token)
+
+
+@router.post("/refresh", response_model=Token)
+def refresh_token(
+    response: Response,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    from app.core.security import decode_token, create_refresh_token
+    from app.models.token import RefreshToken
+    from datetime import timedelta
+    
+    # 1. Get Token from Cookie
+    old_token = request.cookies.get("refresh_token")
+    if not old_token:
+        raise HTTPException(status_code=401, detail="Refresh token missing")
+    
+    try:
+        payload = decode_token(old_token)
+        if payload.get("type") != "refresh":
+             raise HTTPException(status_code=401, detail="Invalid token type")
+             
+        jti = payload.get("jti")
+        user_id = int(payload.get("sub"))
+        
+    except Exception:
+         raise HTTPException(status_code=401, detail="Invalid token")
+
+    # 2. Theft Detection
+    # Check if JTI is in whitelist
+    stored_token = db.query(RefreshToken).filter(RefreshToken.token_jti == jti).first()
+    
+    if not stored_token:
+        # THEFT DETECTED! Token is valid signature but not in DB (means it was already used/rotated)
+        # Action: Revoke ALL tokens for this user
+        print(f"THEFT DETECTED for User {user_id}! Revoking all sessions.")
+        db.query(RefreshToken).filter(RefreshToken.user_id == user_id).delete()
+        db.commit()
+        response.delete_cookie("refresh_token")
+        raise HTTPException(status_code=401, detail="Token reuse detected. Please login again.")
+        
+    # 3. Rotation (Valid Token)
+    # Delete old token
+    db.delete(stored_token)
+    db.commit()
+    
+    # Issue new pair
+    new_access_token = create_access_token(user_id)
+    refresh_expires = timedelta(days=30)
+    new_refresh_token, new_jti = create_refresh_token(user_id, expires_delta=refresh_expires)
+    
+    # Save new to DB
+    new_db_token = RefreshToken(
+        user_id=user_id,
+        token_jti=new_jti,
+        expires_at=datetime.utcnow() + refresh_expires
+    )
+    db.add(new_db_token)
+    db.commit()
+    
+    # Set new Cookie
+    response.set_cookie(
+        key="refresh_token",
+        value=new_refresh_token,
+        httponly=True,
+        secure=False, # TODO: True in Prod
+        samesite="lax",
+        max_age=30 * 24 * 60 * 60 # Refreshing implies active user, extend session
+    )
+    
+    return Token(access_token=new_access_token)
+
+@router.post("/logout")
+def logout(response: Response, request: Request, db: Session = Depends(get_db)):
+    # Standard logout to clear cookie
+    token = request.cookies.get("refresh_token")
+    if token:
+        try:
+            from app.core.security import decode_token
+            # Optional: Remove specific token from DB
+            payload = decode_token(token)
+            jti = payload.get("jti")
+            db.query(RefreshToken).filter(RefreshToken.token_jti == jti).delete()
+            db.commit()
+        except:
+            pass
+            
+    response.delete_cookie("refresh_token")
+    return {"msg": "Logged out successfully"}
 
 
 @router.get("/me", response_model=UserRead)
