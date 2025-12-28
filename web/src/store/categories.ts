@@ -9,6 +9,7 @@ interface CategoriesState {
 
     fetchCategories: () => Promise<void>;
     addCategory: (name: string, color: string, icon: string) => Promise<void>;
+    updateCategory: (id: number, name: string, color: string, icon: string) => Promise<void>;
     deleteCategory: (id: number) => Promise<void>;
     seedDefaults: () => Promise<void>;
 }
@@ -52,6 +53,21 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
             }));
         } catch (err: any) {
             set({ error: err.message || 'Failed to delete category' });
+            throw err;
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+
+    updateCategory: async (id, name, color, icon) => {
+        set({ isLoading: true, error: null });
+        try {
+            const res = await api.put(`/categories/${id}`, { name, color, icon });
+            set((state) => ({
+                categories: state.categories.map((c) => (c.id === id ? res.data : c)),
+            }));
+        } catch (err: any) {
+            set({ error: err.message || 'Failed to update category' });
             throw err;
         } finally {
             set({ isLoading: false });

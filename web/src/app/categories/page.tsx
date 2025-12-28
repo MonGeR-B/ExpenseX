@@ -13,7 +13,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Trash2, RefreshCw } from "lucide-react";
+import { Plus, Trash2, RefreshCw, Pencil } from "lucide-react";
 
 import { getCategoryStats } from "@/lib/api";
 import { CategoryPoint } from "@/lib/types";
@@ -56,6 +56,26 @@ export default function CategoriesPage() {
         return point ? point.total_amount : 0;
     }
 
+    // Edit State
+    const { updateCategory } = useCategoriesStore();
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    // Explicitly type the state to allow null or a Category object
+    const [editingCategory, setEditingCategory] = useState<{ id: number, name: string, color: string, icon: string } | null>(null);
+
+    const handleUpdate = async () => {
+        if (!editingCategory || !editingCategory.name) return;
+        setIsSubmitting(true);
+        try {
+            await updateCategory(editingCategory.id, editingCategory.name, editingCategory.color, editingCategory.icon);
+            setIsEditOpen(false);
+            setEditingCategory(null);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <AppShell>
             <div className="space-y-8 max-w-6xl mx-auto">
@@ -82,25 +102,25 @@ export default function CategoriesPage() {
                                     Add New Category
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="bg-slate-950 border-slate-800 text-slate-50">
+                            <DialogContent className="sm:max-w-[425px] bg-white border-slate-100 text-slate-900 shadow-2xl rounded-[2rem] p-6 lg:p-8">
                                 <DialogHeader>
-                                    <DialogTitle>New Category</DialogTitle>
+                                    <DialogTitle className="text-2xl font-black text-slate-900">New Category</DialogTitle>
                                 </DialogHeader>
-                                <div className="space-y-4 py-4">
+                                <div className="space-y-6 mt-4">
                                     <div className="space-y-2">
-                                        <Label>Name</Label>
+                                        <Label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Name</Label>
                                         <Input
                                             value={newItem.name}
                                             onChange={(e) =>
                                                 setNewItem({ ...newItem, name: e.target.value })
                                             }
                                             placeholder="e.g. Groceries"
-                                            className="bg-slate-900 border-slate-800 text-slate-50"
+                                            className="bg-slate-50 border-slate-200 focus:ring-slate-900 text-slate-900 placeholder:text-slate-400 rounded-xl h-11 font-medium"
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label>Color</Label>
+                                            <Label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Color</Label>
                                             <div className="flex gap-2 items-center">
                                                 <Input
                                                     type="color"
@@ -108,19 +128,19 @@ export default function CategoriesPage() {
                                                     onChange={(e) =>
                                                         setNewItem({ ...newItem, color: e.target.value })
                                                     }
-                                                    className="w-12 h-10 p-1 bg-slate-900 border-slate-800"
+                                                    className="w-14 h-11 p-1 bg-slate-50 border-slate-200 rounded-xl cursor-pointer"
                                                 />
-                                                <span className="text-xs text-slate-400">{newItem.color}</span>
+                                                <span className="text-sm font-bold text-slate-500 uppercase">{newItem.color}</span>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <Label>Icon (Emoji)</Label>
+                                            <Label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Icon (Emoji)</Label>
                                             <Input
                                                 value={newItem.icon}
                                                 onChange={(e) =>
                                                     setNewItem({ ...newItem, icon: e.target.value })
                                                 }
-                                                className="bg-slate-900 border-slate-800 text-slate-50 text-center text-xl"
+                                                className="bg-slate-50 border-slate-200 text-slate-900 text-center text-xl h-11 rounded-xl"
                                                 maxLength={2}
                                             />
                                         </div>
@@ -128,7 +148,7 @@ export default function CategoriesPage() {
                                     <Button
                                         onClick={handleAdd}
                                         disabled={isSubmitting}
-                                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950"
+                                        className="w-full rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold h-12 shadow-lg hover:scale-[1.01] active:scale-[0.98] transition-all"
                                     >
                                         {isSubmitting ? "Saving..." : "Create Category"}
                                     </Button>
@@ -169,14 +189,28 @@ export default function CategoriesPage() {
                                         >
                                             {cat.icon}
                                         </div>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => handleDelete(cat.id)}
-                                            className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl"
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
+                                        <div className="flex items-center bg-white rounded-xl border border-slate-200 shadow-sm">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => {
+                                                    setEditingCategory(cat);
+                                                    setIsEditOpen(true);
+                                                }}
+                                                className="h-9 w-9 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-l-xl rounded-r-none"
+                                            >
+                                                <Pencil className="h-4 w-4" />
+                                            </Button>
+                                            <div className="w-[1px] h-4 bg-slate-200"></div>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleDelete(cat.id)}
+                                                className="h-9 w-9 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-r-xl rounded-l-none"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
                                     </div>
 
                                     <div>
@@ -206,6 +240,63 @@ export default function CategoriesPage() {
                     })}
                 </div>
             </div>
-        </AppShell>
+
+            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                <DialogContent className="sm:max-w-[425px] bg-white border-slate-100 text-slate-900 shadow-2xl rounded-[2rem] p-6 lg:p-8">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl font-black text-slate-900">Edit Category</DialogTitle>
+                    </DialogHeader>
+                    {editingCategory && (
+                        <div className="space-y-6 mt-4">
+                            <div className="space-y-2">
+                                <Label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Name</Label>
+                                <Input
+                                    value={editingCategory.name}
+                                    onChange={(e) =>
+                                        setEditingCategory({ ...editingCategory, name: e.target.value })
+                                    }
+                                    placeholder="e.g. Groceries"
+                                    className="bg-slate-50 border-slate-200 focus:ring-slate-900 text-slate-900 placeholder:text-slate-400 rounded-xl h-11 font-medium"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Color</Label>
+                                    <div className="flex gap-2 items-center">
+                                        <Input
+                                            type="color"
+                                            value={editingCategory.color}
+                                            onChange={(e) =>
+                                                setEditingCategory({ ...editingCategory, color: e.target.value })
+                                            }
+                                            className="w-14 h-11 p-1 bg-slate-50 border-slate-200 rounded-xl cursor-pointer"
+                                        />
+                                        <span className="text-sm font-bold text-slate-500 uppercase">{editingCategory.color}</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-xs text-slate-400 uppercase tracking-wider font-bold">Icon (Emoji)</Label>
+                                    <Input
+                                        value={editingCategory.icon}
+                                        onChange={(e) =>
+                                            setEditingCategory({ ...editingCategory, icon: e.target.value })
+                                        }
+                                        className="bg-slate-50 border-slate-200 text-slate-900 text-center text-xl h-11 rounded-xl"
+                                        maxLength={2}
+                                    />
+                                </div>
+                            </div>
+                            <Button
+                                onClick={handleUpdate}
+                                disabled={isSubmitting}
+                                className="w-full rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold h-12 shadow-lg hover:scale-[1.01] active:scale-[0.98] transition-all"
+                            >
+                                {isSubmitting ? "Saving..." : "Update Category"}
+                            </Button>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
+        </AppShell >
     );
 }
