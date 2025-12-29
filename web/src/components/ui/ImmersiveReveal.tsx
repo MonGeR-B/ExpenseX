@@ -20,7 +20,7 @@ const ImmersiveReveal: React.FC<ImmersiveRevealProps> = ({ isLoading }) => {
                         duration: 0.8,
                         ease: [0.22, 1, 0.36, 1], // Custom "heavy curtain" bezier
                     }}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-white"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black"
                 >
                     <SandyLoading />
                 </motion.div>

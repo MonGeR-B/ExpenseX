@@ -2,12 +2,12 @@
 
 import React from "react";
 import Lottie from "lottie-react";
-import animationData from "@/assets/Money-Transfer.json";
+import animationData from "@/assets/Flying Coin.json";
 
 const SandyLoading = () => {
     return (
         <div className="flex flex-col items-center justify-center">
-            <div className="w-32 h-32 md:w-40 md:h-40">
+            <div className="w-52 h-52 md:w-40 md:h-40">
                 <Lottie animationData={animationData} loop={true} />
             </div>
         </div>
