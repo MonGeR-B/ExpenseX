@@ -1,8 +1,7 @@
-# app/api/stats.py
 from datetime import date
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy import func, extract
 from sqlalchemy.orm import Session
 
@@ -21,10 +20,11 @@ from app.schemas.stats import (
     CategoryPoint,
 )
 import time
+from app.utils.redis_client import redis_client
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 
-# In-Memory Cache (Simple implementation for demonstration)
+# In-Memory Cache (Simple implementation for demonstration) - DEPRECATED via Redis
 CACHE = {}
 
 def get_cached(key: str, ttl: int = 60):
@@ -46,22 +46,27 @@ def _get_year_month_or_default(year: Optional[int], month: Optional[int]) -> tup
 
 
 @router.get("/summary", response_model=SummaryStats)
-def summary_stats(
+async def summary_stats(
+    response: Response,
     year: int | None = Query(None),
     month: int | None = Query(None),
     _t: int | None = Query(None),  # Accept timestamp for cache busting
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Caching Disabled for Real-Time Updates
-    # cache_key = f"summary_{current_user.id}_{year}_{month}"
-    # cached = get_cached(cache_key)
-    # if cached:
-    #     return cached
-
     """
     Summary for a given month (default: current month).
     """
+    # Cache Logic: Only cache the default view (current month/year) to match the strict key requirement
+    use_cache = (year is None and month is None)
+    cache_key = f"user:{current_user.id}:dashboard_stats"
+
+    if use_cache:
+        cached = await redis_client.get_cache(cache_key)
+        if cached:
+            response.headers["X-Cache"] = "HIT"
+            return cached
+
     y, m = _get_year_month_or_default(year, month)
 
     q = db.query(Expense).filter(Expense.user_id == current_user.id)
@@ -116,13 +121,16 @@ def summary_stats(
         top_category_amount=top_cat_amt,
     )
 
-    # Caching Disabled
-    # set_cached(cache_key, result)
+    if use_cache:
+        await redis_client.set_cache(cache_key, result.dict(), ttl=604800)
+        response.headers["X-Cache"] = "MISS"
+
     return result
 
 
 @router.get("/monthly", response_model=MonthlyStats)
-def monthly_stats(
+async def monthly_stats(
+    response: Response,
     year: int | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -130,8 +138,17 @@ def monthly_stats(
     """
     Total spent per month of a given year (default: current year).
     """
+    # Cache Logic
+    y = year or date.today().year
+    cache_key = f"user:{current_user.id}:monthly:{y}"
+    
+    cached = await redis_client.get_cache(cache_key)
+    if cached:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
     today = date.today()
-    y = year or today.year
+    # y already set above
 
     rows = (
         db.query(
@@ -152,12 +169,18 @@ def monthly_stats(
         )
         for row in rows
     ]
+    
+    result = MonthlyStats(year=y, points=points)
+    
+    await redis_client.set_cache(cache_key, result.dict(), ttl=604800)
+    response.headers["X-Cache"] = "MISS"
 
-    return MonthlyStats(year=y, points=points)
+    return result
 
 
 @router.get("/categories", response_model=CategoryStats)
-def categories_stats(
+async def categories_stats(
+    response: Response,
     year: int | None = Query(None),
     month: int | None = Query(None),
     db: Session = Depends(get_db),
@@ -166,7 +189,16 @@ def categories_stats(
     """
     Total spent per category for given year/month.
     """
+    # Cache Logic
     y, m = _get_year_month_or_default(year, month)
+    # Key: user:{uid}:category:{year}:{month} (month can be None)
+    month_key = m if m else "all"
+    cache_key = f"user:{current_user.id}:category:{y}:{month_key}"
+    
+    cached = await redis_client.get_cache(cache_key)
+    if cached:
+        response.headers["X-Cache"] = "HIT"
+        return cached
 
     q = (
         db.query(
@@ -205,11 +237,17 @@ def categories_stats(
             )
         )
 
-    return CategoryStats(year=y, month=m, categories=points)
+    result = CategoryStats(year=y, month=m, categories=points)
+    
+    await redis_client.set_cache(cache_key, result.dict(), ttl=604800)
+    response.headers["X-Cache"] = "MISS"
+    
+    return result
 
 
 @router.get("/daily", response_model=DailyStats)
-def daily_stats(
+async def daily_stats(
+    response: Response,
     year: int | None = Query(None),
     month: int | None = Query(None),
     _t: int | None = Query(None),  # Accept timestamp for cache busting
@@ -219,12 +257,20 @@ def daily_stats(
     """
     Daily spending breakdown for a specific month.
     """
+    # Cache Logic
     y, m = _get_year_month_or_default(year, month)
     
     # Ensure month is set for daily stats, defaults to current if not provided
     if not m:
         today = date.today()
         m = today.month
+
+    cache_key = f"user:{current_user.id}:daily:{y}:{m}"
+    
+    cached = await redis_client.get_cache(cache_key)
+    if cached:
+        response.headers["X-Cache"] = "HIT"
+        return cached
 
     rows = (
         db.query(
@@ -255,4 +301,72 @@ def daily_stats(
             )
         )
 
-    return DailyStats(year=y, month=m, points=points)
+    result = DailyStats(year=y, month=m, points=points)
+    
+    await redis_client.set_cache(cache_key, result.dict(), ttl=604800)
+    response.headers["X-Cache"] = "MISS"
+
+    return result
+
+@router.get("/streak")
+def get_streak_data(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Get current streak and expense dates for the last 90 days.
+    """
+    from datetime import datetime, timedelta
+    
+    # 1. Fetch distinct dates for user (last 90 days)
+    ninety_days_ago = datetime.utcnow().date() - timedelta(days=90)
+    
+    # SQLAlchemy: Distinct dates
+    rows = (
+        db.query(Expense.date)
+        .filter(Expense.user_id == current_user.id)
+        .filter(Expense.date >= ninety_days_ago)
+        .distinct()
+        .order_by(Expense.date.desc())
+        .all()
+    )
+    
+    # Convert to list of dates
+    dates = [row.date for row in rows] # row.date is already datetime.date object from model
+    
+    # 2. Calculate Streak
+    current_streak = 0
+    if not dates:
+        return {"dates": [], "current_streak": 0}
+        
+    today = datetime.utcnow().date()
+    yesterday = today - timedelta(days=1)
+    
+    # Check if the most recent entry is today or yesterday to satisfy "current" streak
+    last_entry = dates[0]
+    
+    # Streak Logic:
+    # If last entry is before yesterday, streak is broken (0).
+    # If last entry is today or yesterday, we count backwards.
+    
+    if last_entry < yesterday:
+        current_streak = 0
+    else:
+        # Determine start point for checking consecutiveness
+        # We start counting from the most recent entry found
+        streak_count = 1
+        current_check = last_entry
+        
+        for i in range(1, len(dates)):
+            expected_prev = current_check - timedelta(days=1)
+            if dates[i] == expected_prev:
+                streak_count += 1
+                current_check = dates[i]
+            else:
+                break
+        current_streak = streak_count
+
+    return {
+        "dates": [d.strftime("%Y-%m-%d") for d in dates],
+        "current_streak": current_streak
+    }

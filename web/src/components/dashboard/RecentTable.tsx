@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useExpenseStore } from "@/store/expenses";
 import { Loader2, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -38,76 +39,51 @@ export function RecentTable() {
     };
 
     return (
-        <div className="rounded-xl sm:rounded-[1.5rem] md:rounded-[2rem] bg-[#eff6ff] p-3 sm:p-4 md:p-6 lg:p-8 shadow-sm transition-all hover:shadow-md">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4 md:mb-6 lg:mb-8">
+        <div className="rounded-xl sm:rounded-[1.5rem] bg-[#eff6ff] p-3 sm:p-4 md:p-5 shadow-sm transition-all hover:shadow-md h-full flex flex-col">
+            <Link href="/transactions" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4 cursor-pointer hover:opacity-80 transition-opacity">
                 <div>
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900">Recent Transactions</h2>
-                    <p className="text-xs sm:text-sm font-bold text-blue-900/60 uppercase tracking-wide mt-0.5 sm:mt-1">History</p>
+                    <h2 className="text-base sm:text-lg md:text-xl font-black text-slate-900">Recent Transactions</h2>
+                    <p className="text-[10px] sm:text-xs font-bold text-blue-900/60 uppercase tracking-wide mt-0.5">History</p>
                 </div>
-            </div>
+            </Link>
 
-            <div className="overflow-x-auto rounded-2xl bg-white border border-blue-100 shadow-sm">
-                <table className="w-full text-sm min-w-[640px]">
+            <div className="overflow-x-auto rounded-2xl bg-white border border-blue-100 shadow-sm flex-1">
+                <table className="w-full text-sm min-w-[300px]">
                     <thead>
                         <tr className="border-b border-blue-50 bg-blue-50/50">
-                            <th className="py-4 px-6 text-left font-bold text-xs uppercase tracking-wider text-blue-900/60">Date</th>
-                            <th className="py-4 px-6 text-left font-bold text-xs uppercase tracking-wider text-blue-900/60">Category</th>
-                            <th className="py-4 px-6 text-left font-bold text-xs uppercase tracking-wider text-blue-900/60">Description</th>
-                            <th className="py-4 px-6 text-right font-bold text-xs uppercase tracking-wider text-blue-900/60">Amount</th>
-                            <th className="py-4 px-6 text-right font-bold text-xs uppercase tracking-wider text-blue-900/60">Actions</th>
+                            <th className="py-2 px-3 text-left font-bold text-[10px] uppercase tracking-wider text-blue-900/60">Date</th>
+                            <th className="py-2 px-3 text-left font-bold text-[10px] uppercase tracking-wider text-blue-900/60">Category</th>
+                            <th className="py-2 px-3 text-right font-bold text-[10px] uppercase tracking-wider text-blue-900/60">Amount</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-blue-50">
                         {expenses.length === 0 && !isLoading ? (
                             <tr>
-                                <td colSpan={5} className="py-12 text-center">
-                                    <div className="flex flex-col items-center justify-center gap-3 opacity-50">
-                                        <img src="/brand/ExpenseX_logo.png" alt="Empty" className="h-12 w-12 grayscale" />
-                                        <p className="text-slate-400 font-bold">No expenses found yet</p>
+                                <td colSpan={3} className="py-8 text-center">
+                                    <div className="flex flex-col items-center justify-center gap-2 opacity-50">
+                                        <img src="/brand/ExpenseX_logo.png" alt="Empty" className="h-8 w-8 grayscale" />
+                                        <p className="text-slate-400 font-bold text-xs">No expenses found yet</p>
                                     </div>
                                 </td>
                             </tr>
-                        ) : expenses.map((exp) => (
+                        ) : expenses.slice(0, 5).map((exp) => (
                             <tr
                                 key={exp.id}
                                 className="group hover:bg-blue-50/30 transition-colors"
                             >
-                                <td className="py-4 px-6 text-slate-500 text-xs font-bold">
+                                <td className="py-2.5 px-3 text-slate-500 text-[11px] font-bold">
                                     {new Date(exp.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                 </td>
-                                <td className="py-4 px-6">
-                                    <div className="flex items-center gap-3">
-                                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-base shadow-sm">
+                                <td className="py-2.5 px-3">
+                                    <div className="flex items-center gap-2">
+                                        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-50 text-sm shadow-sm">
                                             {getCategoryIcon(exp.category_id)}
                                         </span>
-                                        <span className="text-slate-700 font-bold">{categories.find(c => c.id === exp.category_id)?.name || "Uncategorized"}</span>
+                                        <span className="text-slate-700 font-bold text-[11px] truncate max-w-[80px]">{categories.find(c => c.id === exp.category_id)?.name || "Uncategorized"}</span>
                                     </div>
                                 </td>
-                                <td className="py-4 px-6 text-slate-600 font-medium">
-                                    {exp.description || "-"}
-                                </td>
-                                <td className="py-4 px-6 text-right font-black text-slate-900 tracking-tight">
+                                <td className="py-2.5 px-3 text-right font-black text-slate-900 tracking-tight text-xs">
                                     ₹{exp.amount.toLocaleString()}
-                                </td>
-                                <td className="py-4 px-6 text-right">
-                                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-100 rounded-xl"
-                                            onClick={() => handleEdit(exp.id)}
-                                        >
-                                            <Edit2 className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-8 w-8 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl"
-                                            onClick={() => handleDelete(exp.id)}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -115,20 +91,7 @@ export function RecentTable() {
                 </table>
             </div>
 
-            {/* Pagination / Loading */}
-            <div className="mt-6 flex items-center justify-center">
-                {isLoading && <Loader2 className="animate-spin text-blue-500 h-6 w-6" />}
-                {!isLoading && hasMore && (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => fetchExpenses()}
-                        className="text-xs font-bold text-blue-900/60 hover:text-blue-700 hover:bg-blue-50 rounded-xl px-4 py-2"
-                    >
-                        Load More Entries
-                    </Button>
-                )}
-            </div>
+
 
             <EditExpenseDialog
                 expenseId={editId}

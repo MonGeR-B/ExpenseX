@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = os.environ.get("DATABASE_URL", "")
     DIRECT_URL: str | None = os.environ.get("DIRECT_URL")
     API_KEY: str | None = os.environ.get("API_KEY")
+    REDIS_URL: str | None = os.environ.get("REDIS_URL")
     
     JWT_SECRET_KEY: str = os.environ.get("JWT_SECRET_KEY", "changeme") # Fallback for dev, but should be env
     JWT_ALGORITHM: str = "HS256"

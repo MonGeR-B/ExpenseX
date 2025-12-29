@@ -10,6 +10,7 @@ from app.models.expense import Expense
 from app.models.user import User
 from app.schemas.expense import ExpenseCreate, ExpenseRead, ExpenseUpdate
 from app.api.deps import get_current_user
+from app.utils.redis_client import redis_client
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
@@ -42,8 +43,19 @@ def list_expenses(
     q = q.order_by(desc(Expense.date), desc(Expense.created_at))
     return q.offset(skip).limit(limit).all()
 
+async def invalidate_user_cache(user_id: int):
+    """
+    Invalidate ALL stats cache for a user.
+    """
+    # Pattern: user:{user_id}:* covers:
+    # user:{id}:dashboard_stats
+    # user:{id}:monthly:*
+    # user:{id}:category:*
+    # user:{id}:daily:*
+    await redis_client.delete_pattern(f"user:{user_id}:*")
+
 @router.post("/", response_model=ExpenseRead, status_code=201)
-def create_expense(
+async def create_expense(
     expense_in: ExpenseCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -58,10 +70,14 @@ def create_expense(
     db.add(expense)
     db.commit()
     db.refresh(expense)
+    
+    # Batch Invalidate
+    await invalidate_user_cache(current_user.id)
+    
     return expense
 
 @router.put("/{expense_id}", response_model=ExpenseRead)
-def update_expense(
+async def update_expense(
     expense_id: int,
     expense_in: ExpenseUpdate,
     db: Session = Depends(get_db),
@@ -82,10 +98,14 @@ def update_expense(
     db.add(expense)
     db.commit()
     db.refresh(expense)
+    
+    # Batch Invalidate
+    await invalidate_user_cache(current_user.id)
+    
     return expense
 
 @router.delete("/{expense_id}")
-def delete_expense(
+async def delete_expense(
     expense_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -100,4 +120,8 @@ def delete_expense(
     
     db.delete(expense)
     db.commit()
+    
+    # Batch Invalidate
+    await invalidate_user_cache(current_user.id)
+    
     return {"message": "Expense deleted successfully"}

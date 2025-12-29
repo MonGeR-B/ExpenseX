@@ -1,7 +1,5 @@
-"use client"
-
 import { AppShell } from "@/components/layout/AppShell"
-import { RecentTable } from "@/components/dashboard/RecentTable"
+import { TransactionsList } from "@/components/dashboard/TransactionsList"
 
 export default function TransactionsPage() {
     return (
@@ -16,7 +14,7 @@ export default function TransactionsPage() {
 
                     {/* The Card */}
                     <div className="relative overflow-hidden rounded-[2.5rem] bg-violet-50 border-2 border-violet-200 p-8 shadow-sm">
-                        <RecentTable />
+                        <TransactionsList />
                     </div>
                 </div>
             </div>
