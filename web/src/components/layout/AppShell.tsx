@@ -1,6 +1,7 @@
 "use client";
 
 import { Topbar } from "./Topbar";
+import { MobileNav } from "./MobileNav";
 import Lottie from "lottie-react";
 import underwaterAnimation from "../../assets/Underwater Ocean Fish and Turtle.json";
 
@@ -22,9 +23,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
 
             <Topbar />
-            <main className="flex-1 px-4 sm:px-6 py-4 sm:py-8 relative z-10 overflow-y-auto overflow-x-hidden">
+            <main className="flex-1 px-4 sm:px-6 py-4 sm:py-8 relative z-10 overflow-y-auto overflow-x-hidden pb-24 lg:pb-8">
                 {children}
             </main>
+            <MobileNav />
         </div>
     );
 }

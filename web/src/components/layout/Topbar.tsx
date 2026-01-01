@@ -38,7 +38,7 @@ export function Topbar() {
             </div>
 
             {/* Navigation (Center) - Desktop */}
-            <nav className="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-2xl border border-white/5">
+            <nav className="hidden lg:flex items-center gap-1 bg-white/5 p-1 rounded-2xl border border-white/5">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
@@ -59,10 +59,7 @@ export function Topbar() {
                 })}
             </nav>
 
-            {/* Mobile Nav Placeholder */}
-            <div className="md:hidden flex items-center">
-                <Link href="/dashboard" className="text-sm font-bold text-[#d2f34c]">Menu</Link>
-            </div>
+
 
             {/* User Profile / Logout */}
             <div className="flex items-center gap-3">
