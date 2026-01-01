@@ -16,9 +16,6 @@ import api from "@/lib/api";
 import { addMonths, format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import Lottie from "lottie-react";
-import underwaterAnimation from "../../assets/Underwater Ocean Fish and Turtle.json";
-
 function StreakCalendar() {
     const [streakData, setStreakData] = useState<{ dates: string[], current_streak: number }>({ dates: [], current_streak: 0 });
     const [date, setDate] = useState<Date | undefined>(new Date());
@@ -184,19 +181,7 @@ export default function DashboardPage() {
 
     return (
         <div className="space-y-4 -m-4 p-4 sm:-m-6 sm:p-6 lg:-m-8 lg:p-8 min-h-full relative">
-            {/* Underwater Background */}
-            <div className="fixed inset-0 -z-50 bg-[#e0f7fa] w-screen h-screen overflow-hidden pointer-events-none">
-                <Lottie
-                    animationData={underwaterAnimation}
-                    loop={true}
-                    className="absolute inset-0 w-full h-full"
-                    style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
-                    rendererSettings={{
-                        preserveAspectRatio: "xMidYMid slice",
-                        className: "w-full h-full"
-                    }}
-                />
-            </div>
+
 
             <ImmersiveReveal isLoading={isLoading} />
 

@@ -163,12 +163,12 @@ export default function CategoriesPage() {
                         const spent = getSpending(cat.id);
                         const hasSpent = spent > 0;
 
-                        // Default themes if no custom color (though we usually have one)
+                        // Glassmorphic Themes
                         const themes = [
-                            { name: 'blue', bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-900', accent: 'bg-blue-500', shadow: 'shadow-blue-500/20' },
-                            { name: 'pink', bg: 'bg-pink-50', border: 'border-pink-200', text: 'text-pink-900', accent: 'bg-pink-500', shadow: 'shadow-pink-500/20' },
-                            { name: 'emerald', bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-900', accent: 'bg-emerald-500', shadow: 'shadow-emerald-500/20' },
-                            { name: 'amber', bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-900', accent: 'bg-amber-500', shadow: 'shadow-amber-500/20' },
+                            { name: 'blue', bg: 'bg-blue-500/10', border: 'border-blue-500/20', text: 'text-blue-100', accent: 'bg-blue-500', shadow: 'shadow-blue-500/20' },
+                            { name: 'pink', bg: 'bg-pink-500/10', border: 'border-pink-500/20', text: 'text-pink-100', accent: 'bg-pink-500', shadow: 'shadow-pink-500/20' },
+                            { name: 'emerald', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-100', accent: 'bg-emerald-500', shadow: 'shadow-emerald-500/20' },
+                            { name: 'amber', bg: 'bg-amber-500/10', border: 'border-amber-500/20', text: 'text-amber-100', accent: 'bg-amber-500', shadow: 'shadow-amber-500/20' },
                         ];
                         const t = themes[index % themes.length];
 
@@ -176,20 +176,20 @@ export default function CategoriesPage() {
                             <div key={cat.id} className="relative group">
                                 {/* Pinned Top */}
                                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                                    <div className="h-6 w-6 rounded-full shadow-[2px_4px_6px_rgba(0,0,0,0.3)] bg-gradient-to-br from-slate-400 to-slate-600 ring-1 ring-black/10"></div>
+                                    <div className="h-6 w-6 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.3)] bg-gradient-to-br from-white/20 to-white/5 ring-1 ring-white/20 backdrop-blur-xl"></div>
                                 </div>
 
-                                <div className="relative overflow-hidden rounded-[2.5rem] bg-slate-50 border-2 border-slate-200 p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
-                                    <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-${t.name}-400 to-transparent opacity-50`}></div>
+                                <div className={`relative overflow-hidden rounded-[2.5rem] ${t.bg} border ${t.border} p-6 shadow-2xl backdrop-blur-xl transition-transform hover:-translate-y-1 hover:shadow-emerald-500/10 h-full`}>
+                                    <div className={`absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/5 to-transparent opacity-50`}></div>
 
-                                    <div className="flex justify-between items-start mb-6">
+                                    <div className="flex justify-between items-start mb-6 relative z-10">
                                         <div
-                                            className="h-14 w-14 rounded-2xl flex items-center justify-center text-3xl shadow-lg bg-white"
-                                            style={{ color: cat.color }}
+                                            className="h-14 w-14 rounded-2xl flex items-center justify-center text-3xl shadow-lg bg-white/10 border border-white/10 backdrop-blur-md"
+                                            style={{ color: cat.color, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
                                         >
                                             {cat.icon}
                                         </div>
-                                        <div className="flex items-center bg-white rounded-xl border border-slate-200 shadow-sm">
+                                        <div className="flex items-center bg-black/20 rounded-xl border border-white/10 shadow-sm backdrop-blur-md">
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
@@ -197,42 +197,42 @@ export default function CategoriesPage() {
                                                     setEditingCategory(cat);
                                                     setIsEditOpen(true);
                                                 }}
-                                                className="h-9 w-9 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-l-xl rounded-r-none"
+                                                className="h-9 w-9 text-slate-400 hover:text-blue-400 hover:bg-white/5 rounded-l-xl rounded-r-none"
                                             >
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
-                                            <div className="w-[1px] h-4 bg-slate-200"></div>
+                                            <div className="w-[1px] h-4 bg-white/10"></div>
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => handleDelete(cat.id)}
-                                                className="h-9 w-9 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-r-xl rounded-l-none"
+                                                className="h-9 w-9 text-slate-400 hover:text-rose-400 hover:bg-white/5 rounded-r-xl rounded-l-none"
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <h3 className="text-xl font-black text-slate-800 mb-2">{cat.name}</h3>
+                                    <div className="relative z-10">
+                                        <h3 className="text-xl font-black text-white mb-2 drop-shadow-sm">{cat.name}</h3>
                                         {hasSpent ? (
-                                            <div className="p-3 rounded-2xl bg-white border border-slate-100 shadow-sm">
-                                                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Spent this month</p>
-                                                <span className="text-2xl font-black text-slate-900">
+                                            <div className="p-3 rounded-2xl bg-black/20 border border-white/10 shadow-inner">
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Spent this month</p>
+                                                <span className="text-2xl font-black text-white">
                                                     ₹{spent.toLocaleString()}
                                                 </span>
                                             </div>
                                         ) : (
-                                            <div className="p-3 rounded-2xl bg-slate-100 border border-slate-200 border-dashed">
-                                                <p className="text-sm text-slate-400 font-medium text-center">No transactions yet</p>
+                                            <div className="p-3 rounded-2xl bg-white/5 border border-white/5 border-dashed">
+                                                <p className="text-sm text-slate-500 font-medium text-center">No transactions yet</p>
                                             </div>
                                         )}
                                     </div>
 
                                     {/* Color Tag */}
-                                    <div className="mt-4 flex items-center gap-2">
-                                        <div className="h-3 w-3 rounded-full shadow-sm" style={{ backgroundColor: cat.color }} />
-                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{cat.color}</span>
+                                    <div className="mt-4 flex items-center gap-2 relative z-10">
+                                        <div className="h-2 w-2 rounded-full shadow-[0_0_8px_currentColor]" style={{ backgroundColor: cat.color, color: cat.color }} />
+                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest opacity-80">{cat.color}</span>
                                     </div>
                                 </div>
                             </div>

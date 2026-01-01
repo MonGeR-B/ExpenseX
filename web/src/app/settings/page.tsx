@@ -83,39 +83,39 @@ export default function SettingsPage() {
                     {/* Profile Settings - Purple Theme */}
                     <div className="relative group md:col-span-2">
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                            <div className="h-6 w-6 rounded-full border border-black/10 bg-purple-500 shadow-md"></div>
+                            <div className="h-6 w-6 rounded-full border border-white/20 bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
                         </div>
-                        <div className="relative overflow-hidden rounded-[2.5rem] bg-purple-50 border-2 border-purple-200 p-8 shadow-sm">
+                        <div className="relative overflow-hidden rounded-[2.5rem] bg-purple-500/10 backdrop-blur-xl border border-purple-500/20 p-8 shadow-2xl">
                             <div className="flex items-center gap-4 mb-6">
-                                <div className="h-12 w-12 rounded-2xl bg-purple-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/20">
+                                <div className="h-12 w-12 rounded-2xl bg-purple-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/30">
                                     <UserIcon className="h-6 w-6" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black text-purple-900">Profile Settings</h3>
-                                    <p className="text-xs font-bold text-purple-700/60 uppercase tracking-wider">Public Profile</p>
+                                    <h3 className="text-xl font-black text-white">Profile Settings</h3>
+                                    <p className="text-xs font-bold text-purple-200/60 uppercase tracking-wider">Public Profile</p>
                                 </div>
                             </div>
 
                             <div className="space-y-4 max-w-md">
                                 <div className="space-y-2">
-                                    <Label htmlFor="username" className="text-xs font-black text-purple-900 uppercase">Display Name</Label>
+                                    <Label htmlFor="username" className="text-xs font-black text-purple-200 uppercase">Display Name</Label>
                                     <div className="flex gap-3">
                                         <Input
                                             id="username"
                                             placeholder="Enter your display name"
                                             defaultValue={user?.username || ''}
                                             onChange={(e) => setNewUsername(e.target.value)}
-                                            className="bg-white border-purple-200 text-purple-900 focus:ring-purple-500 rounded-xl h-11"
+                                            className="bg-black/20 border-purple-500/30 text-white focus:ring-purple-500 rounded-xl h-11 placeholder:text-white/20"
                                         />
                                         <Button
                                             onClick={handleUpdateProfile}
                                             disabled={updatingProfile}
-                                            className="bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl h-11 px-6 shadow-md whitespace-nowrap"
+                                            className="bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl h-11 px-6 shadow-lg shadow-purple-900/20 whitespace-nowrap"
                                         >
                                             {updatingProfile ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
                                         </Button>
                                     </div>
-                                    <p className="text-xs text-purple-700/60 font-medium">
+                                    <p className="text-xs text-purple-200/50 font-medium">
                                         This is how you will be addressed in the app.
                                     </p>
                                 </div>
@@ -125,22 +125,22 @@ export default function SettingsPage() {
                     {/* Export Card - Blue Theme */}
                     <div className="relative group">
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                            <div className="h-6 w-6 rounded-full border border-black/10 bg-blue-500 shadow-md"></div>
+                            <div className="h-6 w-6 rounded-full border border-white/20 bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]"></div>
                         </div>
-                        <div className="relative overflow-hidden rounded-[2.5rem] bg-blue-50 border-2 border-blue-200 p-8 shadow-sm h-full">
+                        <div className="relative overflow-hidden rounded-[2.5rem] bg-blue-500/10 backdrop-blur-xl border border-blue-500/20 p-8 shadow-2xl h-full">
                             <div className="flex items-center gap-4 mb-6">
-                                <div className="h-12 w-12 rounded-2xl bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/20">
+                                <div className="h-12 w-12 rounded-2xl bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/30">
                                     <Download className="h-6 w-6" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black text-blue-900">Export Content</h3>
-                                    <p className="text-xs font-bold text-blue-700/60 uppercase tracking-wider">Download CSV</p>
+                                    <h3 className="text-xl font-black text-white">Export Content</h3>
+                                    <p className="text-xs font-bold text-blue-200/60 uppercase tracking-wider">Download CSV</p>
                                 </div>
                             </div>
-                            <p className="text-sm text-slate-600 font-medium mb-6 leading-relaxed">
+                            <p className="text-sm text-slate-300 font-medium mb-6 leading-relaxed">
                                 Get a complete backup of your expenses and categories. Perfect for Excel analysis.
                             </p>
-                            <Button onClick={handleExport} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl h-12 shadow-md">
+                            <Button onClick={handleExport} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl h-12 shadow-lg shadow-blue-900/20">
                                 Download CSV
                             </Button>
                         </div>
@@ -149,33 +149,33 @@ export default function SettingsPage() {
                     {/* Import Card - Emerald Theme */}
                     <div className="relative group">
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                            <div className="h-6 w-6 rounded-full border border-black/10 bg-emerald-500 shadow-md"></div>
+                            <div className="h-6 w-6 rounded-full border border-white/20 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
                         </div>
-                        <div className="relative overflow-hidden rounded-[2.5rem] bg-emerald-50 border-2 border-emerald-200 p-8 shadow-sm h-full">
+                        <div className="relative overflow-hidden rounded-[2.5rem] bg-emerald-500/10 backdrop-blur-xl border border-emerald-500/20 p-8 shadow-2xl h-full">
                             <div className="flex items-center gap-4 mb-6">
-                                <div className="h-12 w-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                                <div className="h-12 w-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30">
                                     <Upload className="h-6 w-6" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black text-emerald-900">Import Data</h3>
-                                    <p className="text-xs font-bold text-emerald-700/60 uppercase tracking-wider">Restore or Move</p>
+                                    <h3 className="text-xl font-black text-white">Import Data</h3>
+                                    <p className="text-xs font-bold text-emerald-200/60 uppercase tracking-wider">Restore or Move</p>
                                 </div>
                             </div>
                             <div className="space-y-4">
                                 <div className="grid w-full gap-1.5">
-                                    <Label htmlFor="csv" className="text-xs font-black text-emerald-900 uppercase">Select CSV File</Label>
+                                    <Label htmlFor="csv" className="text-xs font-black text-emerald-200 uppercase">Select CSV File</Label>
                                     <Input
                                         id="csv"
                                         type="file"
                                         accept=".csv"
                                         onChange={(e) => setFile(e.target.files?.[0] || null)}
-                                        className="bg-white border-emerald-200 text-emerald-900 file:bg-emerald-100 file:text-emerald-700 file:font-bold rounded-xl h-12 pt-2"
+                                        className="bg-black/20 border-emerald-500/30 text-emerald-100 file:bg-emerald-500/20 file:text-emerald-300 file:font-bold rounded-xl h-12 pt-2 file:border-0 file:mr-4 file:rounded-lg cursor-pointer"
                                     />
                                 </div>
                                 <Button
                                     onClick={handleImport}
                                     disabled={!file || importing}
-                                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl h-12 shadow-md"
+                                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl h-12 shadow-lg shadow-emerald-900/20"
                                 >
                                     {importing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Start Import"}
                                 </Button>
@@ -185,18 +185,18 @@ export default function SettingsPage() {
 
                     {/* Danger Zone - Red Theme */}
                     <div className="relative group md:col-span-2">
-                        <div className="relative overflow-hidden rounded-[2.5rem] bg-red-50 border-2 border-red-200 p-8 shadow-sm">
+                        <div className="relative overflow-hidden rounded-[2.5rem] bg-red-500/10 backdrop-blur-xl border border-red-500/20 p-8 shadow-2xl">
                             <div className="flex items-center gap-4 mb-4">
-                                <div className="h-10 w-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center">
+                                <div className="h-10 w-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center border border-red-500/20">
                                     <AlertTriangle className="h-5 w-5" />
                                 </div>
-                                <h3 className="text-lg font-black text-red-900">Danger Zone</h3>
+                                <h3 className="text-lg font-black text-red-100">Danger Zone</h3>
                             </div>
                             <div className="flex justify-between items-center">
-                                <p className="text-sm text-red-800 font-medium">
+                                <p className="text-sm text-red-200/70 font-medium">
                                     Actions here cannot be undone. Be careful.
                                 </p>
-                                <Button variant="destructive" className="bg-red-500 text-white hover:bg-red-600 font-bold rounded-xl border-0 shadow-sm" disabled>
+                                <Button variant="destructive" className="bg-red-500 text-white hover:bg-red-600 font-bold rounded-xl border-0 shadow-lg" disabled>
                                     Delete Account (Soon)
                                 </Button>
                             </div>
