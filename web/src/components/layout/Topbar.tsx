@@ -1,14 +1,24 @@
 "use client";
 
 import { useAuthStore } from "@/store/auth";
-import { LogOut, Menu, Settings2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { LogOut, LayoutGrid, ArrowLeftRight, PieChart, BarChart3, Folder, Settings } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { AddExpenseDialog } from "@/components/dashboard/AddExpenseDialog";
+import { cn } from "@/lib/utils";
 
-export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
+const navItems = [
+    { href: "/dashboard", label: "Overview", icon: LayoutGrid },
+    { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
+    { href: "/budgets", label: "Budgets", icon: PieChart },
+    { href: "/reports", label: "Reports", icon: BarChart3 },
+    { href: "/categories", label: "Categories", icon: Folder },
+    { href: "/settings", label: "Settings", icon: Settings },
+];
+
+export function Topbar() {
     const { user, logout } = useAuthStore();
     const router = useRouter();
+    const pathname = usePathname();
 
     const handleLogout = () => {
         logout();
@@ -16,63 +26,60 @@ export function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
     };
 
     return (
-        <header className="flex items-center justify-between gap-4 border-b border-white/5 bg-[#111111] px-4 py-2 md:px-6 sticky top-0 z-50">
-            <div className="flex items-center gap-4">
-                <button
-                    onClick={onMenuClick}
-                    className="md:hidden p-2 -ml-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/5"
-                >
-                    <Menu size={20} />
-                </button>
-                <div className="md:hidden h-8 w-8 relative ml-2">
+        <header className="flex items-center justify-between gap-4 border-b border-white/10 bg-[#111111]/80 backdrop-blur-md px-4 py-3 md:px-8 sticky top-0 z-50 shadow-sm">
+            {/* Logo */}
+            <div className="flex items-center gap-2 shrink-0">
+                <div className="h-8 w-8 relative">
                     <img src="/brand/ExpenseX_logo.png" alt="Logo" className="h-full w-full object-contain" />
                 </div>
-                <div className="space-y-1">
-                    <p className="hidden md:block text-xs uppercase tracking-widest text-slate-500 font-bold">
-                        Overview
-                    </p>
-                    <h1 className="text-xl md:text-2xl font-black tracking-tight text-white">
-                        Hello, {user?.username || user?.email?.split('@')[0] || 'User'} 👋
-                    </h1>
-                </div>
+                <h1 className="text-xl font-black tracking-tight text-white hidden sm:block">
+                    Expense<span className="text-[#d2f34c]">X</span>
+                </h1>
             </div>
 
+            {/* Navigation (Center) - Desktop */}
+            <nav className="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-2xl border border-white/5">
+                {navItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={cn(
+                                "flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200 text-xs font-bold",
+                                isActive
+                                    ? "bg-[#d2f34c] text-black shadow-lg shadow-[#d2f34c]/20"
+                                    : "text-zinc-400 hover:text-white hover:bg-white/5"
+                            )}
+                        >
+                            <item.icon size={16} />
+                            {item.label}
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            {/* Mobile Nav Placeholder */}
+            <div className="md:hidden flex items-center">
+                <Link href="/dashboard" className="text-sm font-bold text-[#d2f34c]">Menu</Link>
+            </div>
+
+            {/* User Profile / Logout */}
             <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-xl bg-white/5 border border-white/5 text-xs font-bold text-slate-400 shadow-sm">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    System Active
-                </div>
-
-                <Link href="/categories">
-                    <button className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-xl">
-                        <Settings2 className="h-4 w-4" />
-                        Manage Categories
-                    </button>
-                </Link>
-
-                <AddExpenseDialog>
-                    <button className="group relative inline-flex items-center justify-center rounded-xl bg-white px-4 py-1.5 text-xs font-bold text-black hover:bg-slate-200 transition-all">
-                        <span className="mr-2 text-lg text-black font-black">+</span> Add Expense
-                    </button>
-                </AddExpenseDialog>
-
-                <div className="flex items-center gap-4 pl-4 border-l border-white/10 ml-2">
-                    <div className="flex items-center gap-3 group cursor-pointer">
-                        <div className="h-8 w-8 rounded-xl bg-[#222] border border-white/10 p-[2px] shadow-sm flex items-center justify-center">
-                            <span className="text-xs font-black uppercase text-white">
-                                {user?.username?.[0] || user?.email?.[0] || 'U'}
-                            </span>
-                        </div>
+                <div className="flex items-center gap-2 group cursor-pointer">
+                    <div className="h-9 w-9 rounded-xl bg-[#222] border border-white/10 p-[2px] shadow-sm flex items-center justify-center">
+                        <span className="text-xs font-black uppercase text-white">
+                            {user?.username?.[0] || user?.email?.[0] || 'U'}
+                        </span>
                     </div>
-
-                    <button
-                        onClick={handleLogout}
-                        className="p-2 rounded-xl text-slate-500 hover:text-rose-500 hover:bg-rose-500/10 transition-all"
-                        title="Logout"
-                    >
-                        <LogOut className="h-5 w-5" />
-                    </button>
                 </div>
+                <button
+                    onClick={handleLogout}
+                    className="p-2 rounded-xl text-slate-500 hover:text-rose-500 hover:bg-rose-500/10 transition-all"
+                    title="Logout"
+                >
+                    <LogOut className="h-5 w-5" />
+                </button>
             </div>
         </header>
     );

@@ -16,6 +16,9 @@ import api from "@/lib/api";
 import { addMonths, format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import Lottie from "lottie-react";
+import underwaterAnimation from "../../assets/Underwater Ocean Fish and Turtle.json";
+
 function StreakCalendar() {
     const [streakData, setStreakData] = useState<{ dates: string[], current_streak: number }>({ dates: [], current_streak: 0 });
     const [date, setDate] = useState<Date | undefined>(new Date());
@@ -40,7 +43,7 @@ function StreakCalendar() {
     const handleNextMonth = () => setMonth(prev => addMonths(prev, 1));
 
     return (
-        <Card className="rounded-[1.5rem] bg-white border border-slate-100 shadow-xl w-full max-w-[280px] flex flex-col overflow-hidden group font-sans">
+        <Card className="rounded-[1.5rem] bg-white/20 backdrop-blur-md border border-white/20 shadow-xl w-full max-w-[280px] flex flex-col overflow-hidden group font-sans">
             <CardContent className="h-full w-full p-4 flex flex-col">
 
                 {/* Custom Header Row: Streak -> Month -> Nav */}
@@ -84,10 +87,16 @@ function StreakCalendar() {
                     selected={date}
                     onSelect={setDate}
                     className="w-full p-0"
+                    formatters={{ formatCaption: () => "" }}
+                    styles={{
+                        caption: { display: "none" },
+                        caption_label: { display: "none" }
+                    }}
                     classNames={{
                         months: "w-full h-full flex flex-col",
                         month: "w-full h-full flex flex-col",
                         caption: "hidden", // Hide default header
+                        caption_label: "hidden", // Hide label specifically
                         nav: "hidden",    // Hide default nav
                         table: "w-full border-collapse",
                         // Week Header: CSS Grid for perfect alignment
@@ -150,7 +159,13 @@ import ImmersiveReveal from "@/components/ui/ImmersiveReveal";
 
 // ... existing imports ...
 
+import { useAuthStore } from "@/store/auth";
+import { AddExpenseDialog } from "@/components/dashboard/AddExpenseDialog";
+
+// ... existing imports ...
+
 export default function DashboardPage() {
+    const { user } = useAuthStore();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -168,8 +183,50 @@ export default function DashboardPage() {
     }, []);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 -m-4 p-4 sm:-m-6 sm:p-6 lg:-m-8 lg:p-8 min-h-full relative">
+            {/* Underwater Background */}
+            <div className="fixed inset-0 -z-50 bg-[#e0f7fa] w-screen h-screen overflow-hidden pointer-events-none">
+                <Lottie
+                    animationData={underwaterAnimation}
+                    loop={true}
+                    className="absolute inset-0 w-full h-full"
+                    style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
+                    rendererSettings={{
+                        preserveAspectRatio: "xMidYMid slice",
+                        className: "w-full h-full"
+                    }}
+                />
+            </div>
+
             <ImmersiveReveal isLoading={isLoading} />
+
+            {/* Hero Section */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 py-2">
+                <div>
+                    <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-100 drop-shadow-sm">
+                        Hello, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">{user?.username || 'User'}</span> 👋
+                    </h1>
+                    <p className="text-slate-100 font-bold mt-1 text-sm md:text-base">
+                        Here's your financial overview.
+                    </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <Link href="/categories">
+                        <button className="flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-black transition-colors bg-white/30 hover:bg-white/50 px-4 py-2.5 rounded-2xl backdrop-blur-md border border-white/40 shadow-sm">
+                            <Settings2 className="h-4 w-4" />
+                            Manage Categories
+                        </button>
+                    </Link>
+
+                    <AddExpenseDialog>
+                        <button className="group relative inline-flex items-center justify-center rounded-2xl bg-[#111] px-5 py-2.5 text-xs font-bold text-white hover:bg-black transition-all shadow-xl shadow-black/10">
+                            <span className="mr-2 text-base text-[#d2f34c] font-black">+</span> Add Expense
+                        </button>
+                    </AddExpenseDialog>
+                </div>
+            </div>
+
             <div className="flex flex-col xl:flex-row gap-4">
                 {/* Left Column (Main Content) - Expands to fill space */}
                 <div className="flex-1 min-w-0 space-y-4">

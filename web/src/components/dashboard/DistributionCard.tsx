@@ -67,7 +67,7 @@ export function DistributionCard() {
 
     return (
         <Link href="/reports" className="block w-full cursor-pointer transition-transform hover:scale-[1.02]">
-            <div className="rounded-[1.5rem] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border border-slate-100 p-3 shadow-sm flex flex-col w-full h-full">
+            <div className="rounded-[1.5rem] bg-white/20 backdrop-blur-md border border-white/20 p-3 shadow-sm flex flex-col w-full h-full">
                 <div className="mb-2">
                     <h2 className="text-sm font-bold text-slate-900">Distribution</h2>
                     <p className="text-[10px] text-slate-400 font-medium">Where it goes</p>

@@ -42,9 +42,9 @@ export function CardsAndCharts() {
                 {/* Card 01: Total Spent (Blue/Freepik Theme) */}
                 <div className="relative group flex-1">
                     {/* The Card */}
-                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] bg-blue-50 border-2 border-blue-200 p-3 sm:p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
+                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/50 p-3 sm:p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
                         <div className="flex justify-between items-start mb-2 sm:mb-3">
-                            <div className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-xl sm:rounded-2xl bg-blue-500 text-white flex items-center justify-center text-base sm:text-lg shadow-lg shadow-blue-500/20">
+                            <div className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-xl sm:rounded-2xl bg-blue-500/20 text-blue-600 flex items-center justify-center text-base sm:text-lg shadow-sm">
                                 💰
                             </div>
                         </div>
@@ -62,9 +62,9 @@ export function CardsAndCharts() {
 
                 {/* Card 02: Transactions (Pink/Pinterest Theme) */}
                 <div className="relative group flex-1">
-                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] bg-pink-50 border-2 border-pink-200 p-3 sm:p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
+                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/50 p-3 sm:p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
                         <div className="flex justify-between items-start mb-2 sm:mb-3">
-                            <div className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-xl sm:rounded-2xl bg-pink-500 text-white flex items-center justify-center text-base sm:text-lg shadow-lg shadow-pink-500/20">
+                            <div className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-xl sm:rounded-2xl bg-pink-500/20 text-pink-600 flex items-center justify-center text-base sm:text-lg shadow-sm">
                                 🧾
                             </div>
                         </div>
@@ -82,9 +82,9 @@ export function CardsAndCharts() {
 
                 {/* Card 03: Top Category (Green/Envato Theme) */}
                 <div className="relative group flex-1">
-                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] bg-emerald-50 border-2 border-emerald-200 p-3 sm:p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
+                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/50 p-3 sm:p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
                         <div className="flex justify-between items-start mb-2 sm:mb-3">
-                            <div className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-xl sm:rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-base sm:text-lg shadow-lg shadow-emerald-500/20">
+                            <div className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-xl sm:rounded-2xl bg-emerald-500/20 text-emerald-600 flex items-center justify-center text-base sm:text-lg shadow-sm">
                                 🏆
                             </div>
                         </div>
@@ -94,7 +94,7 @@ export function CardsAndCharts() {
                                 {summary?.top_category ?? "—"}
                             </div>
                             <p className="text-[10px] sm:text-xs font-semibold text-slate-500 leading-relaxed">
-                                Most spent on <span className="text-emerald-600 font-bold">{summary?.top_category ?? "nothing"}</span> with <span className="text-emerald-700 font-bold">₹{(summary?.top_category_amount ?? 0).toLocaleString()}</span>.
+                                Most spent on <span className="text-emerald-700 font-bold">{summary?.top_category ?? "nothing"}</span> with <span className="text-emerald-700 font-bold">₹{(summary?.top_category_amount ?? 0).toLocaleString()}</span>.
                             </p>
                         </div>
                     </div>

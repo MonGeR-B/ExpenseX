@@ -21,7 +21,7 @@ export default function ReportsPage() {
                         <div className="lg:col-span-2 h-[500px]">
                             <ReportsAnalyticsChart />
                         </div>
-                        <div className="lg:col-span-1 h-[500px]">
+                        <div className="lg:col-span-1 min-h-[500px]">
                             <ReportsDistributionChart />
                         </div>
                     </div>

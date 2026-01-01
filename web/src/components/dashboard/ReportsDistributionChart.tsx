@@ -64,12 +64,12 @@ export function ReportsDistributionChart() {
     );
 
     return (
-        <div className="rounded-[2.5rem] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border border-slate-100 p-8 shadow-sm flex flex-col h-full">
+        <div className="rounded-[2.5rem] bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border border-slate-100 p-8 shadow-sm flex flex-col">
             <div className="mb-6">
                 <h2 className="text-2xl font-bold text-slate-900">Expense Distribution</h2>
                 <p className="text-sm text-slate-400 font-medium mt-1">Breakdown by category</p>
             </div>
-            <div className="relative flex-1 min-h-[350px]">
+            <div className="relative h-[320px] w-full shrink-0">
                 {loading && !categories ? (
                     <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-400 animate-pulse">Loading...</div>
                 ) : categoryChartData.length === 0 ? (
@@ -109,11 +109,6 @@ export function ReportsDistributionChart() {
                                     String(name),
                                 ]}
                             />
-                            <Legend
-                                verticalAlign="bottom"
-                                height={36}
-                                formatter={(value, entry: any) => <span className="text-slate-600 font-bold ml-1 mr-3 text-xs">{value}</span>}
-                            />
                         </PieChart>
                     </ResponsiveContainer>
                 )}
@@ -126,6 +121,19 @@ export function ReportsDistributionChart() {
                         </span>
                     </div>
                 )}
+            </div>
+
+            {/* Custom Grid Legend */}
+            <div className="mt-8 grid grid-cols-3 gap-x-2 gap-y-3">
+                {categoryChartData.map((entry, index) => (
+                    <div key={index} className="flex items-center gap-1.5">
+                        <div
+                            className="h-2.5 w-2.5 rounded-full shrink-0 shadow-sm"
+                            style={{ backgroundColor: categoryColors[index % categoryColors.length] }}
+                        />
+                        <span className="text-xs font-bold text-slate-600 truncate">{entry.name}</span>
+                    </div>
+                ))}
             </div>
         </div>
     );

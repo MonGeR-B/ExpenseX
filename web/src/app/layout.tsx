@@ -25,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`min-h-screen bg-black text-white ${outfit.className}`} suppressHydrationWarning>
+      <body className={`h-screen overflow-hidden bg-black text-white ${outfit.className}`} suppressHydrationWarning>
         {children}
         <Toaster theme="dark" position="top-center" />
         <Analytics />

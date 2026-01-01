@@ -39,7 +39,7 @@ export function RecentTable() {
     };
 
     return (
-        <div className="rounded-xl sm:rounded-[1.5rem] bg-[#eff6ff] p-3 sm:p-4 md:p-5 shadow-sm transition-all hover:shadow-md h-full flex flex-col">
+        <div className="rounded-xl sm:rounded-[1.5rem] bg-white/20 backdrop-blur-md border border-white/20 p-3 sm:p-4 md:p-5 shadow-sm transition-all hover:shadow-md h-full flex flex-col">
             <Link href="/transactions" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4 cursor-pointer hover:opacity-80 transition-opacity">
                 <div>
                     <h2 className="text-base sm:text-lg md:text-xl font-black text-slate-900">Recent Transactions</h2>
