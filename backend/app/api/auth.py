@@ -212,15 +212,17 @@ async def forgot_password(request: schemas.auth.ForgotPasswordRequest, db: Sessi
     Trigger password reset email.
     Always returns 200 to prevent user enumeration.
     """
+    print(f"DEBUG: Password reset requested for '{request.email}'")
     user = db.query(User).filter(User.email == request.email).first()
     if not user:
+        print(f"DEBUG: User not found for '{request.email}'")
         # Return success even if user not found to prevent enumeration
         return {"msg": "If the email exists, a reset link has been sent."}
     
     # Generate 6-digit OTP
     import secrets
     otp = "".join([str(secrets.randbelow(10)) for _ in range(6)])
-    # print(f"-------------\nDEBUG RESET OTP: {otp}\n-------------")
+    print(f"-------------\nDEBUG RESET OTP: {otp}\n-------------")
     
     # Hash OTP
     import hashlib
@@ -236,6 +238,7 @@ async def forgot_password(request: schemas.auth.ForgotPasswordRequest, db: Sessi
     try:
         from app.core.email import send_reset_password_email
         await send_reset_password_email(user.email, otp)
+        print(f"DEBUG: Email sent to {user.email}")
     except Exception as e:
         print(f"Failed to send email: {e}")
     

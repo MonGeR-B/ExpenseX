@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
         setIsSubmitting(true)
 
         try {
-            await api.post("/auth/forgot-password", { email })
+            await api.post("/auth/forgot-password", { email: email.trim() })
             // Redirect to reset page with email param
             toast.success("Code sent! Check your email.")
             router.push(`/reset-password?email=${encodeURIComponent(email)}`)
