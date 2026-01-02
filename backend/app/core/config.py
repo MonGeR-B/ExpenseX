@@ -22,8 +22,8 @@ class Settings(BaseSettings):
     MAIL_FROM: str = os.environ.get("MAIL_FROM", "baibhabghosh2003@gmail.com")
     MAIL_PORT: int = int(os.environ.get("MAIL_PORT", 587))
     MAIL_SERVER: str = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
-    MAIL_STARTTLS: bool = True
-    MAIL_SSL_TLS: bool = False
+    MAIL_STARTTLS: bool = os.environ.get("MAIL_STARTTLS", "True") == "True"
+    MAIL_SSL_TLS: bool = os.environ.get("MAIL_SSL_TLS", "False") == "True"
     USE_CREDENTIALS: bool = True
     VALIDATE_CERTS: bool = True
 
