@@ -44,12 +44,13 @@ export function TransactionsList() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <div>
                     <h2 className="text-xl sm:text-2xl font-black text-slate-900">All Transactions</h2>
-                    <p className="text-sm font-medium text-slate-500 mt-1">Manage and track your spending</p>
+                    <p className="text-sm font-medium text-slate-100 mt-1">Manage and track your spending</p>
                 </div>
             </div>
 
             <div className="overflow-hidden rounded-[2rem] bg-white border border-blue-100 shadow-sm">
-                <div className="overflow-x-auto">
+                {/* Desktop View (Table) */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-sm min-w-[600px]">
                         <thead>
                             <tr className="border-b border-blue-50 bg-blue-50/50">
@@ -119,6 +120,56 @@ export function TransactionsList() {
                     </table>
                 </div>
 
+                {/* Mobile View (List) */}
+                <div className="md:hidden">
+                    {expenses.length === 0 && !isLoading ? (
+                        <div className="py-12 text-center">
+                            <p className="text-slate-400 font-bold text-sm">No expenses found</p>
+                        </div>
+                    ) : (
+                        <div className="divide-y divide-blue-50">
+                            {expenses.map((exp) => (
+                                <div key={exp.id} className="p-4 flex items-center gap-3 active:bg-blue-50/30 transition-colors">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-xl shadow-sm">
+                                        {getCategoryIcon(exp.category_id)}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="font-bold text-slate-800 text-xs sm:text-sm truncate">
+                                            {exp.description || "Expense"}
+                                        </p>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
+                                            {new Date(exp.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                        </p>
+                                    </div>
+                                    <div className="shrink-0 text-right px-2">
+                                        <span className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
+                                            ₹{exp.amount.toLocaleString()}
+                                        </span>
+                                    </div>
+                                    <div className="flex gap-1 shrink-0">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                                            onClick={() => handleEdit(exp.id)}
+                                        >
+                                            <Edit2 className="h-3.5 w-3.5" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg"
+                                            onClick={() => handleDelete(exp.id)}
+                                        >
+                                            <Trash2 className="h-3.5 w-3.5" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
                 {/* Pagination / Load More */}
                 {hasMore && (
                     <div className="p-4 border-t border-blue-50 bg-blue-50/30 flex justify-center">
@@ -126,7 +177,7 @@ export function TransactionsList() {
                             variant="outline"
                             onClick={() => fetchExpenses()}
                             disabled={isLoading}
-                            className="bg-white hover:bg-white text-slate-600 border-blue-200 hover:border-blue-300 font-bold gap-2 pl-6 pr-4 shadow-sm hover:shadow-md transition-all active:scale-95"
+                            className="rounded-xl bg-white hover:bg-white text-slate-600 border-blue-200 hover:border-blue-300 font-bold gap-2 pl-6 pr-4 shadow-sm hover:shadow-md transition-all active:scale-95"
                         >
                             {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                             Load More History <ArrowRight className="h-4 w-4 opacity-50" />

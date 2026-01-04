@@ -26,6 +26,7 @@ export function DistributionCard() {
     const [summary, setSummary] = useState<SummaryStats | null>(null);
     const [categories, setCategories] = useState<CategoryStats | null>(null);
     const [loading, setLoading] = useState(true);
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
     useEffect(() => {
         let mounted = true;
@@ -67,72 +68,86 @@ export function DistributionCard() {
 
     return (
         <Link href="/reports" className="block w-full cursor-pointer transition-transform hover:scale-[1.02]">
-            <div className="rounded-[1.5rem] bg-white/20 backdrop-blur-md border border-white/20 p-3 shadow-sm flex flex-col w-full h-full">
-                <div className="mb-2">
-                    <h2 className="text-sm font-bold text-slate-900">Distribution</h2>
-                    <p className="text-[10px] text-slate-400 font-medium">Where it goes</p>
+            <div className="rounded-[2rem] bg-white/[0.03] backdrop-blur-[24px] border-t border-l border-t-white/15 border-l-white/15 border-b border-r border-b-black/20 border-r-black/20 p-8 shadow-sm flex flex-col w-full h-full">
+                <div className="mb-6">
+                    <h2 className="text-xl font-black text-slate-100 uppercase tracking-tight">Distribution</h2>
+                    <p className="text-xs font-bold text-slate-300 uppercase tracking-wide mt-1">Where it goes</p>
                 </div>
-                <div className="relative h-[140px] w-full">
+                <div className="relative h-[160px] w-full">
                     {loading && !categories ? (
                         <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-400 animate-pulse">Loading...</div>
                     ) : categoryChartData.length === 0 ? (
-                        <div className="h-full flex items-center justify-center text-sm font-medium text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        <div className="h-full flex items-center justify-center text-sm font-medium text-slate-400 bg-white/5 rounded-2xl border border-dashed border-white/10">
                             No stats available 📊
                         </div>
                     ) : (
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
+                                <defs>
+                                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur" />
+                                            <feMergeNode in="SourceGraphic" />
+                                        </feMerge>
+                                    </filter>
+                                </defs>
                                 <Pie
                                     data={categoryChartData}
-                                    innerRadius={35}
-                                    outerRadius={55}
+                                    innerRadius={50}
+                                    outerRadius={70}
                                     paddingAngle={4}
-                                    cornerRadius={6}
+                                    cornerRadius={8}
                                     dataKey="value"
                                     stroke="none"
+                                    onMouseEnter={(_, index) => setActiveIndex(index)}
+                                    onMouseLeave={() => setActiveIndex(null)}
                                 >
                                     {categoryChartData.map((entry, index) => (
                                         <Cell
                                             key={`cell-${entry.name}-${index}`}
                                             fill={categoryColors[index % categoryColors.length]}
+                                            style={{
+                                                filter: activeIndex === index ? "url(#glow)" : undefined,
+                                                opacity: activeIndex !== null && activeIndex !== index ? 0.6 : 1,
+                                                transform: activeIndex === index ? "scale(1.05)" : "scale(1)",
+                                                transformOrigin: "center",
+                                                transition: "all 0.3s ease"
+                                            }}
+                                            stroke="rgba(0,0,0,0)"
                                         />
                                     ))}
                                 </Pie>
                                 <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: "#ffffff",
-                                        border: "1px solid #e2e8f0",
-                                        borderRadius: "12px",
-                                        boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
-                                        color: "#1e293b"
-                                    }}
-                                    formatter={(value: any, name: any) => [
-                                        `₹${value}`,
-                                        String(name),
-                                    ]}
+                                    cursor={false}
+                                    contentStyle={{ display: 'none' }}
                                 />
                             </PieChart>
                         </ResponsiveContainer>
                     )}
-                    {/* Center Text */}
-                    {categoryChartData.length > 0 && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Total</span>
-                            <span className="text-base font-black text-slate-900">
-                                ₹{Math.round(totalCategories / 1000)}k
-                            </span>
-                        </div>
-                    )}
                 </div>
 
-                {/* Simple Legend for compact view */}
-                <div className="mt-2 flex flex-wrap gap-1.5 justify-center">
-                    {categoryChartData.slice(0, 3).map((entry, index) => (
-                        <div key={index} className="flex items-center gap-1 text-[10px]">
-                            <div className="h-2 w-2 rounded-full" style={{ backgroundColor: categoryColors[index % categoryColors.length] }} />
-                            <span className="font-semibold text-slate-600 truncate max-w-[60px]">{entry.name}</span>
-                        </div>
-                    ))}
+                {/* Dynamic Stats Legend (Outside Chart) */}
+                <div className="mt-2 flex flex-col items-center justify-center h-[50px] transition-all duration-300">
+                    {activeIndex !== null && categoryChartData[activeIndex] ? (
+                        <>
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest animate-in fade-in slide-in-from-bottom-2 duration-200">
+                                {categoryChartData[activeIndex].name}
+                            </p>
+                            <p className="text-2xl font-black text-white tracking-tight animate-in fade-in slide-in-from-bottom-3 duration-200" style={{ color: categoryColors[activeIndex % categoryColors.length] }}>
+                                ₹{categoryChartData[activeIndex].value.toLocaleString()}
+                            </p>
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                Total Spent
+                            </p>
+                            <p className="text-2xl font-black text-slate-200 tracking-tight">
+                                ₹{Math.round(totalCategories / 1000)}k
+                            </p>
+                        </>
+                    )}
                 </div>
             </div>
         </Link>

@@ -40,39 +40,39 @@ function StreakCalendar() {
     const handleNextMonth = () => setMonth(prev => addMonths(prev, 1));
 
     return (
-        <Card className="rounded-[1.5rem] bg-white/20 backdrop-blur-md border border-white/20 shadow-xl w-full max-w-[280px] flex flex-col overflow-hidden group font-sans">
-            <CardContent className="h-full w-full p-4 flex flex-col">
+        <Card className="rounded-[2rem] bg-white/[0.03] backdrop-blur-[24px] border-t border-l border-t-white/15 border-l-white/15 border-b border-r border-b-black/20 border-r-black/20 shadow-xl w-full max-w-[320px] flex flex-col overflow-hidden group font-sans">
+            <CardContent className="h-full w-full p-8 flex flex-col">
 
                 {/* Custom Header Row: Streak -> Month -> Nav */}
-                <div className="flex items-center justify-start gap-2 w-full mb-2">
+                <div className="flex items-center justify-between gap-2 w-full mb-6">
                     {/* 1. Streak Badge */}
-                    <div className="flex items-center gap-1 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100 shadow-sm">
-                        <span className="text-sm">🔥</span>
-                        <span className="text-xs font-black text-rose-500">{streakData.current_streak}</span>
+                    <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1 rounded-full border border-white/10 shadow-sm">
+                        <span className="text-xs">🔥</span>
+                        <span className="text-sm font-black text-[#d2f34c] uppercase tracking-tight">{streakData.current_streak} DAY</span>
                     </div>
 
                     {/* 2. Month Name */}
-                    <span className="text-base font-black text-slate-800 tracking-tight">
+                    <span className="text-lg font-black text-slate-100 uppercase tracking-tight">
                         {format(month, "MMMM yyyy")}
                     </span>
 
                     {/* 3. Navigation Arrows */}
-                    <div className="flex items-center gap-0.5 ml-auto">
+                    <div className="flex items-center gap-1">
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-5 w-5 text-slate-400 hover:text-slate-900"
+                            className="h-6 w-6 text-slate-400 hover:text-white hover:bg-white/10 rounded-full"
                             onClick={handlePrevMonth}
                         >
-                            <ChevronLeft className="h-3 w-3" />
+                            <ChevronLeft className="h-4 w-4" />
                         </Button>
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-5 w-5 text-slate-400 hover:text-slate-900"
+                            className="h-6 w-6 text-slate-400 hover:text-white hover:bg-white/10 rounded-full"
                             onClick={handleNextMonth}
                         >
-                            <ChevronRight className="h-3 w-3" />
+                            <ChevronRight className="h-4 w-4" />
                         </Button>
                     </div>
                 </div>
@@ -97,16 +97,16 @@ function StreakCalendar() {
                         nav: "hidden",    // Hide default nav
                         table: "w-full border-collapse",
                         // Week Header: CSS Grid for perfect alignment
-                        head_row: "grid grid-cols-7 w-full mb-1 bg-slate-50/50 rounded-full py-0.5",
-                        head_cell: "text-slate-400 font-bold text-[0.65rem] uppercase tracking-widest text-center flex items-center justify-center",
+                        head_row: "grid grid-cols-7 w-full mb-4",
+                        head_cell: "text-slate-500 font-bold text-[10px] uppercase tracking-widest text-center flex items-center justify-center",
                         // Date Rows: CSS Grid to match Header
-                        row: "grid grid-cols-7 w-full mt-0",
-                        cell: "text-center text-sm p-0 relative focus-within:relative focus-within:z-20 h-8 flex items-center justify-center",
+                        row: "grid grid-cols-7 w-full mt-2 gap-y-2", // Added gap-y-2 for vertical spacing
+                        cell: "text-center text-sm p-0 relative focus-within:relative focus-within:z-20 h-9 flex items-center justify-center", // Increased height to h-9
                         day: cn(
-                            "h-7 w-7 p-0 font-medium text-slate-700 hover:bg-zinc-100 rounded-full transition-all text-xs"
+                            "h-8 w-8 p-0 font-medium text-slate-300 hover:bg-white/5 hover:text-white rounded-full transition-all text-xs"
                         ),
-                        day_selected: "bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-900/20",
-                        day_today: "text-slate-900 font-black",
+                        day_selected: "bg-[#d2f34c] text-black hover:bg-[#c3e63b] shadow-[0_0_20px_rgba(210,243,76,0.4)]",
+                        day_today: "text-[#d2f34c] font-black",
                     }}
                     modifiers={{ hasExpense: (date: Date) => hasExpense(date) }}
                     components={{
@@ -130,12 +130,12 @@ function StreakCalendar() {
                                         {...buttonProps}
                                         type="button"
                                         className={cn(
-                                            "h-7 w-7 p-0 font-semibold flex items-center justify-center relative rounded-full transition-all group/day focus:outline-none ring-0 outline-none text-xs",
+                                            "h-8 w-8 p-0 font-semibold flex items-center justify-center relative rounded-full transition-all group/day focus:outline-none ring-0 outline-none text-xs",
                                             props.className,
                                             // Grey circle background for expense days (as requested)
-                                            isStreakDay && !isSelected && "bg-slate-200 text-slate-900 font-bold hover:bg-slate-300",
+                                            isStreakDay && !isSelected && "bg-white/10 text-white font-bold hover:bg-white/20",
                                             // Selected state overrides everything
-                                            isSelected && "bg-slate-900 text-white scale-105",
+                                            isSelected && "bg-[#d2f34c] text-black scale-110 shadow-[0_0_15px_rgba(210,243,76,0.3)]",
                                         )}
                                     >
                                         <span className="relative z-10">{actualDate.getDate()}</span>

@@ -13,7 +13,7 @@ export default function TransactionsPage() {
                 <div className="relative pt-6">
 
                     {/* The Card */}
-                    <div className="relative overflow-hidden rounded-[2.5rem] bg-black/20 backdrop-blur-xl border border-white/20 p-8 shadow-2xl">
+                    <div className="relative overflow-hidden md:rounded-[2.5rem] bg-transparent md:bg-black/20 md:backdrop-blur-xl border-none md:border md:border-white/20 p-0 md:p-8 md:shadow-2xl">
                         <TransactionsList />
                     </div>
                 </div>

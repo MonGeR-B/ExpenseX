@@ -32,7 +32,7 @@ export function Topbar() {
                 <div className="h-8 w-8 relative">
                     <img src="/brand/ExpenseX_logo.png" alt="Logo" className="h-full w-full object-contain" />
                 </div>
-                <h1 className="text-xl font-black tracking-tight text-white hidden sm:block">
+                <h1 className="text-xl font-black tracking-tight text-white hidden sm:block uppercase">
                     Expense<span className="text-[#d2f34c]">X</span>
                 </h1>
             </div>

@@ -82,9 +82,7 @@ export default function SettingsPage() {
                 <div className="grid gap-8 md:grid-cols-2 pt-6">
                     {/* Profile Settings - Purple Theme */}
                     <div className="relative group md:col-span-2">
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                            <div className="h-6 w-6 rounded-full border border-white/20 bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
-                        </div>
+
                         <div className="relative overflow-hidden rounded-[2.5rem] bg-purple-500/10 backdrop-blur-xl border border-purple-500/20 p-8 shadow-2xl">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="h-12 w-12 rounded-2xl bg-purple-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/30">
@@ -124,9 +122,7 @@ export default function SettingsPage() {
                     </div>
                     {/* Export Card - Blue Theme */}
                     <div className="relative group">
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                            <div className="h-6 w-6 rounded-full border border-white/20 bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]"></div>
-                        </div>
+
                         <div className="relative overflow-hidden rounded-[2.5rem] bg-blue-500/10 backdrop-blur-xl border border-blue-500/20 p-8 shadow-2xl h-full">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="h-12 w-12 rounded-2xl bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/30">
@@ -148,9 +144,7 @@ export default function SettingsPage() {
 
                     {/* Import Card - Emerald Theme */}
                     <div className="relative group">
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                            <div className="h-6 w-6 rounded-full border border-white/20 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
-                        </div>
+
                         <div className="relative overflow-hidden rounded-[2.5rem] bg-emerald-500/10 backdrop-blur-xl border border-emerald-500/20 p-8 shadow-2xl h-full">
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="h-12 w-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30">

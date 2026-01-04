@@ -184,9 +184,7 @@ export default function BudgetsPage() {
                             return (
                                 <div key={b.id} className="relative group">
                                     {/* Pin */}
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                                        <div className={`h-6 w-6 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.4)] bg-gradient-to-br from-${t.name}-400 to-${t.name}-600 ring-1 ring-white/20`}></div>
-                                    </div>
+
 
                                     <div className={`relative overflow-hidden rounded-[2.5rem] ${t.bg} border ${t.border} p-6 shadow-2xl backdrop-blur-xl transition-transform hover:-translate-y-1 hover:shadow-${t.name}-500/20 h-full`}>
                                         <div className="flex justify-between items-start mb-6">

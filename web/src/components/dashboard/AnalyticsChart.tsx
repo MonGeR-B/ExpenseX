@@ -122,17 +122,17 @@ export function AnalyticsChart() {
     })();
 
     return (
-        <div className="rounded-xl sm:rounded-[1.5rem] md:rounded-[2rem] bg-white/20 backdrop-blur-md border border-white/20 p-3 sm:p-4 shadow-sm h-full flex flex-col">
-            <div className="mb-2 sm:mb-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+        <div className="rounded-[2rem] bg-white/[0.03] backdrop-blur-[24px] border-t border-l border-t-white/15 border-l-white/15 border-b border-r border-b-black/20 border-r-black/20 p-8 shadow-sm flex flex-col">
+            <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <div>
-                    <h2 className="text-base sm:text-lg font-bold text-slate-900">Analytics</h2>
-                    <p className="text-[10px] sm:text-xs text-slate-400 font-medium">Spending trends</p>
+                    <h2 className="text-xl font-black text-slate-100 uppercase tracking-tight">Analytics</h2>
+                    <p className="text-xs font-bold text-slate-300 uppercase tracking-wide mt-1">Spending trends</p>
                 </div>
-                <div className="flex gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100">
+                <div className="flex gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
                     <Button
                         variant="ghost"
                         size="sm"
-                        className={`h-6 px-3 text-[10px] font-bold rounded-lg transition-all ${view === 'weekly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`h-7 px-4 text-[10px] font-bold rounded-xl transition-all uppercase tracking-wide ${view === 'weekly' ? 'bg-[#d2f34c] text-black shadow-lg shadow-[#d2f34c]/20' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
                         onClick={() => setView("weekly")}
                     >
                         Weekly
@@ -140,74 +140,85 @@ export function AnalyticsChart() {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className={`h-6 px-3 text-[10px] font-bold rounded-lg transition-all ${view === 'monthly' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`h-7 px-4 text-[10px] font-bold rounded-xl transition-all uppercase tracking-wide ${view === 'monthly' ? 'bg-[#d2f34c] text-black shadow-lg shadow-[#d2f34c]/20' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
                         onClick={() => setView("monthly")}
                     >
                         Monthly
                     </Button>
                 </div>
             </div>
-            <div className="flex-1 min-h-[220px] sm:min-h-[240px] md:min-h-[260px]">
+            <div className="w-full h-[250px] sm:h-[320px]">
                 {loading ? (
                     <div className="h-full flex items-center justify-center text-sm text-slate-400 animate-pulse">Loading chart...</div>
                 ) : (view === "monthly" ? monthlyData : weeklyChartData).length === 0 ? (
-                    <div className="h-full flex items-center justify-center text-sm font-medium text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                    <div className="h-full flex items-center justify-center text-sm font-medium text-slate-400 bg-white/5 rounded-2xl border border-dashed border-white/10">
                         No stats available 📉
                     </div>
                 ) : (
                     <ResponsiveContainer width="100%" height="100%">
                         {view === "monthly" ? (
-                            <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                            <AreaChart data={monthlyData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="spend" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.2} />
+                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
                                         <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                                     </linearGradient>
+                                    <linearGradient id="neonGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#a855f7" /> {/* Neon Purple */}
+                                        <stop offset="100%" stopColor="#4338ca" /> {/* Deep Indigo */}
+                                    </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} dy={10} fontWeight={500} />
-                                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val}`} fontWeight={500} />
+                                {/* Removed Grid */}
+                                <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} dy={10} fontWeight={700} tick={{ fill: '#94a3b8' }} />
+                                {/* Hidden YAxis */}
+                                <YAxis hide />
                                 <Tooltip
                                     contentStyle={{
-                                        backgroundColor: "#ffffff",
-                                        border: "1px solid #e2e8f0",
+                                        backgroundColor: "#0f172a",
+                                        border: "1px solid rgba(255,255,255,0.1)",
                                         borderRadius: "16px",
-                                        boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
-                                        color: "#1e293b",
+                                        boxShadow: "0 10px 40px -10px rgba(0,0,0,0.5)",
+                                        color: "#f8fafc",
                                         padding: "12px 16px"
                                     }}
-                                    itemStyle={{ color: "#7c3aed", fontWeight: "bold" }}
-                                    formatter={(value: any) => [`₹${value}`, "Spent"]}
+                                    itemStyle={{ color: "#d2f34c", fontWeight: "bold", fontFamily: 'Antonio', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+                                    formatter={(value: any) => [`₹${value}`, "SPENT"]}
                                     cursor={{ stroke: '#cbd5e1', strokeWidth: 1, strokeDasharray: '4 4' }}
                                 />
                                 <Area
                                     type="monotone"
                                     dataKey="amount"
                                     stroke="#8b5cf6"
-                                    strokeWidth={4}
+                                    strokeWidth={3}
                                     fill="url(#spend)"
-                                    activeDot={{ r: 6, strokeWidth: 0 }}
-                                    dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }}
+                                    activeDot={{ r: 6, strokeWidth: 0, fill: "#d2f34c" }}
                                 />
                             </AreaChart>
                         ) : (
                             <BarChart data={weeklyChartData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} dy={10} fontWeight={500} />
-                                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val}`} fontWeight={500} />
+                                <defs>
+                                    <linearGradient id="neonBar" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="#d946ef" /> {/* Fuchsia */}
+                                        <stop offset="100%" stopColor="#8b5cf6" /> {/* Violet */}
+                                    </linearGradient>
+                                </defs>
+                                <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} dy={10} fontWeight={700} tick={{ fill: '#94a3b8' }} />
+                                <YAxis hide />
                                 <Tooltip
-                                    cursor={{ fill: '#f8fafc', radius: 8 }}
+                                    cursor={{ fill: 'rgba(255,255,255,0.05)', radius: 8 }}
                                     contentStyle={{
-                                        backgroundColor: "#ffffff",
-                                        border: "1px solid #e2e8f0",
+                                        backgroundColor: "#0f172a",
+                                        border: "1px solid rgba(255,255,255,0.1)",
                                         borderRadius: "16px",
-                                        boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
-                                        color: "#1e293b"
+                                        boxShadow: "0 10px 40px -10px rgba(0,0,0,0.5)",
+                                        color: "#f8fafc"
                                     }}
-                                    formatter={(value: any) => [`₹${value}`, "Spent"]}
-                                    labelFormatter={(label) => `Date: ${label}`}
+                                    itemStyle={{ color: "#d2f34c", fontWeight: "bold", fontFamily: 'Antonio', textTransform: 'uppercase' }}
+                                    formatter={(value: any) => [`₹${value}`, "SPENT"]}
+                                    labelFormatter={(label) => `DATE: ${label}`}
+                                    labelStyle={{ color: '#94a3b8', fontWeight: 'bold', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}
                                 />
-                                <Bar dataKey="amount" fill="#8b5cf6" radius={[6, 6, 6, 6]} barSize={48} />
+                                <Bar dataKey="amount" fill="url(#neonBar)" radius={[6, 6, 6, 6]} barSize={40} />
                             </BarChart>
                         )}
                     </ResponsiveContainer>

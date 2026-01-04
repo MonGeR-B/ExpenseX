@@ -36,24 +36,24 @@ export function CardsAndCharts() {
     }
 
     return (
-        <div className="space-y-3 sm:space-y-4 md:space-y-6">
+        <div className="space-y-4 md:space-y-6">
             {/* Top cards - "Designer's Toolkit" Pinned Style (Pins Removed) */}
-            <div className="flex flex-col md:flex-row gap-4 w-full">
+            <div className="flex flex-col md:flex-row gap-6 w-full">
                 {/* Card 01: Total Spent (Blue/Freepik Theme) */}
                 <div className="relative group flex-1">
                     {/* The Card */}
-                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/50 p-3 sm:p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
-                        <div className="flex justify-between items-start mb-2 sm:mb-3">
-                            <div className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-xl sm:rounded-2xl bg-blue-500/20 text-blue-600 flex items-center justify-center text-base sm:text-lg shadow-sm">
+                    <div className="relative overflow-hidden rounded-[2rem] bg-white/[0.03] backdrop-blur-[24px] border-t border-l border-t-white/15 border-l-white/15 border-b border-r border-b-black/20 border-r-black/20 p-8 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
+                        <div className="flex justify-between items-start mb-4">
+                            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl shadow-sm">
                                 💰
                             </div>
                         </div>
                         <div>
-                            <h3 className="text-sm sm:text-base md:text-lg font-black text-slate-800 mb-0.5">Total Spent</h3>
-                            <div className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight my-1">
+                            <h3 className="text-lg font-black text-slate-100 mb-1 uppercase tracking-tight">Total Spent</h3>
+                            <div className="text-3xl lg:text-4xl font-medium text-white tracking-tight my-2">
                                 ₹{(summary?.total_spent ?? 0).toLocaleString()}
                             </div>
-                            <p className="text-[10px] sm:text-xs font-semibold text-slate-500 leading-snug">
+                            <p className="text-xs font-semibold text-slate-300 leading-snug">
                                 Total amount spent this month
                             </p>
                         </div>
@@ -62,18 +62,18 @@ export function CardsAndCharts() {
 
                 {/* Card 02: Transactions (Pink/Pinterest Theme) */}
                 <div className="relative group flex-1">
-                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/50 p-3 sm:p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
-                        <div className="flex justify-between items-start mb-2 sm:mb-3">
-                            <div className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-xl sm:rounded-2xl bg-pink-500/20 text-pink-600 flex items-center justify-center text-base sm:text-lg shadow-sm">
+                    <div className="relative overflow-hidden rounded-[2rem] bg-white/[0.03] backdrop-blur-[24px] border-t border-l border-t-white/15 border-l-white/15 border-b border-r border-b-black/20 border-r-black/20 p-8 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
+                        <div className="flex justify-between items-start mb-4">
+                            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-xl shadow-sm">
                                 🧾
                             </div>
                         </div>
                         <div>
-                            <h3 className="text-sm sm:text-base md:text-lg font-black text-slate-800 mb-0.5">Transactions</h3>
-                            <div className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight my-1">
+                            <h3 className="text-lg font-black text-slate-100 mb-1 uppercase tracking-tight">Transactions</h3>
+                            <div className="text-3xl lg:text-4xl font-medium text-white tracking-tight my-2">
                                 {summary?.transactions_count ?? 0}
                             </div>
-                            <p className="text-[10px] sm:text-xs font-semibold text-slate-500 leading-relaxed">
+                            <p className="text-xs font-semibold text-slate-300 leading-relaxed">
                                 Total active transactions processed this month
                             </p>
                         </div>
@@ -82,19 +82,19 @@ export function CardsAndCharts() {
 
                 {/* Card 03: Top Category (Green/Envato Theme) */}
                 <div className="relative group flex-1">
-                    <div className="relative overflow-hidden rounded-xl sm:rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/50 p-3 sm:p-4 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
-                        <div className="flex justify-between items-start mb-2 sm:mb-3">
-                            <div className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 rounded-xl sm:rounded-2xl bg-emerald-500/20 text-emerald-600 flex items-center justify-center text-base sm:text-lg shadow-sm">
+                    <div className="relative overflow-hidden rounded-[2rem] bg-white/[0.03] backdrop-blur-[24px] border-t border-l border-t-white/15 border-l-white/15 border-b border-r border-b-black/20 border-r-black/20 p-8 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
+                        <div className="flex justify-between items-start mb-4">
+                            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl shadow-sm">
                                 🏆
                             </div>
                         </div>
                         <div>
-                            <h3 className="text-sm sm:text-base md:text-lg font-black text-slate-800 mb-0.5">Top Category</h3>
-                            <div className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 tracking-tight my-1 truncate">
+                            <h3 className="text-lg font-black text-slate-100 mb-1 uppercase tracking-tight">Top Category</h3>
+                            <div className="text-2xl lg:text-3xl font-medium text-white tracking-tight my-2 truncate">
                                 {summary?.top_category ?? "—"}
                             </div>
-                            <p className="text-[10px] sm:text-xs font-semibold text-slate-500 leading-relaxed">
-                                Most spent on <span className="text-emerald-700 font-bold">{summary?.top_category ?? "nothing"}</span> with <span className="text-emerald-700 font-bold">₹{(summary?.top_category_amount ?? 0).toLocaleString()}</span>.
+                            <p className="text-xs font-semibold text-slate-300 leading-relaxed">
+                                Most spent on <span className="text-emerald-400 font-bold">{summary?.top_category ?? "nothing"}</span> with <span className="text-emerald-400 font-bold">₹{(summary?.top_category_amount ?? 0).toLocaleString()}</span>.
                             </p>
                         </div>
                     </div>

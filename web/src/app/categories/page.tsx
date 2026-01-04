@@ -175,9 +175,7 @@ export default function CategoriesPage() {
                         return (
                             <div key={cat.id} className="relative group">
                                 {/* Pinned Top */}
-                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                                    <div className="h-6 w-6 rounded-full shadow-[0_0_15px_rgba(255,255,255,0.3)] bg-gradient-to-br from-white/20 to-white/5 ring-1 ring-white/20 backdrop-blur-xl"></div>
-                                </div>
+
 
                                 <div className={`relative overflow-hidden rounded-[2.5rem] ${t.bg} border ${t.border} p-6 shadow-2xl backdrop-blur-xl transition-transform hover:-translate-y-1 hover:shadow-emerald-500/10 h-full`}>
                                     <div className={`absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/5 to-transparent opacity-50`}></div>

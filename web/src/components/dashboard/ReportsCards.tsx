@@ -37,14 +37,10 @@ export function ReportsCards() {
 
     return (
         <div className="space-y-6 sm:space-y-8">
-            {/* Top cards - "Designer's Toolkit" Pinned Style (Restored for Reports) */}
+            {/* Top cards - "Designer's Toolkit" Pinned Style (Pins Removed) */}
             <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3 pt-6">
                 {/* Card 01: Total Spent (Blue/Freepik Theme) */}
                 <div className="relative group">
-                    {/* The Pin */}
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                        <div className="h-6 w-6 rounded-full bg-blue-600 shadow-[2px_4px_6px_rgba(0,0,0,0.3)] bg-gradient-to-br from-blue-400 to-blue-700 ring-1 ring-black/10"></div>
-                    </div>
                     {/* The Card */}
                     <div className="relative overflow-hidden rounded-[2.5rem] bg-blue-50 border-2 border-blue-200 p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
                         <div className="flex justify-between items-start mb-4">
@@ -65,10 +61,7 @@ export function ReportsCards() {
                 </div>
 
                 {/* Card 02: Transactions (Pink/Pinterest Theme) */}
-                <div className="relative group mt-8 sm:mt-0">
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                        <div className="h-6 w-6 rounded-full bg-pink-600 shadow-[2px_4px_6px_rgba(0,0,0,0.3)] bg-gradient-to-br from-pink-400 to-pink-700 ring-1 ring-black/10"></div>
-                    </div>
+                <div className="relative group mt-0">
                     <div className="relative overflow-hidden rounded-[2.5rem] bg-pink-50 border-2 border-pink-200 p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
                         <div className="flex justify-between items-start mb-4">
                             <div className="h-12 w-12 rounded-2xl bg-pink-500 text-white flex items-center justify-center text-xl shadow-lg shadow-pink-500/20">
@@ -88,10 +81,7 @@ export function ReportsCards() {
                 </div>
 
                 {/* Card 03: Top Category (Green/Envato Theme) */}
-                <div className="relative group mt-8 lg:mt-0">
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
-                        <div className="h-6 w-6 rounded-full bg-emerald-600 shadow-[2px_4px_6px_rgba(0,0,0,0.3)] bg-gradient-to-br from-emerald-400 to-emerald-700 ring-1 ring-black/10"></div>
-                    </div>
+                <div className="relative group mt-0">
                     <div className="relative overflow-hidden rounded-[2.5rem] bg-emerald-50 border-2 border-emerald-200 p-6 shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md h-full">
                         <div className="flex justify-between items-start mb-4">
                             <div className="h-12 w-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-xl shadow-lg shadow-emerald-500/20">
